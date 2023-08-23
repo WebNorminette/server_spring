@@ -35,3 +35,15 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+### costom ###
+!api/.keep
+!config/.keep
+!controller/.keep
+!entity/.keep
+!exception/.keep
+!repository/.keep
+!security/.keep
+!service/.keep
+!util/.keep
