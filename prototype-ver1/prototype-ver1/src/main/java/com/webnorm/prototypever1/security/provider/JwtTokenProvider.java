@@ -90,15 +90,8 @@ public class JwtTokenProvider {
                     .build()
                     .parseClaimsJws(token);     // 토큰 유효성 확인 및 서명 검증
             return true;
-        } catch (SecurityException | MalformedJwtException e) {
-            log.info("Invalid JWT Token", e);
-        } catch (ExpiredJwtException e) {
-            log.info("Expired JWT Token", e);
-        } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT Token", e);
-        } catch (IllegalArgumentException e) {
-            log.info("JWT claims string is empty", e);
+        } catch (Exception e) {
+            throw e;
         }
-        return false;
     }
 }

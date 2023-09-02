@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class MemberController {
 
     // 회원가입 : request(dto)를 member 엔티티에 매핑, 메일 발송
     @PostMapping
-    public ResponseEntity<Object> signup(@RequestBody MemberSignupRequest request) {
+    public ResponseEntity signup(@RequestBody MemberSignupRequest request) {
         //System.out.println(request.getUserId());
         Member member = Member.builder()
                 .firstName(request.getFirstName())
@@ -35,12 +36,13 @@ public class MemberController {
                 .build();
         memberService.createMember(member);
         emailController.sendWelcomeEmail(member.getEmail(), member.getFirstName()+ " " + member.getLastName());
-        return new ResponseEntity("signup success", HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     // 회원목록 조회(관리자) : response(dto) 리스트를 stream을 이용해 member 리스트로 매핑
     @GetMapping
-    public ResponseEntity<?> memberList() {
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity memberList() {
         List<Member> findMembers = memberService.findAllMember();
         List<MemberListResponse> collect = findMembers.stream()
                 .map(m -> MemberListResponse.builder()
@@ -49,15 +51,15 @@ public class MemberController {
                         .lastName(m.getLastName())
                         .build())
                 .collect(Collectors.toList());
-        return new ResponseEntity<>(collect, HttpStatus.OK);
+        return ResponseEntity.ok(collect);
     }
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody MemberLoginRequest request) {
+    public ResponseEntity login(@RequestBody MemberLoginRequest request) {
         String email = request.getEmail();
         String password = request.getPassword();
         TokenInfo tokenInfo = memberService.login(email, password);
-        return new ResponseEntity<>(tokenInfo, HttpStatus.OK);
+        return ResponseEntity.ok(tokenInfo);
     }
 }

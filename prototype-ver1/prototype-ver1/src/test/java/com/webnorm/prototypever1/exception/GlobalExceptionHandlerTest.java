@@ -1,9 +1,6 @@
 package com.webnorm.prototypever1.exception;
 
-import com.webnorm.prototypever1.exception.exceptions.MemberEmailDuplicateException;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class GlobalExceptionHandlerTest {
