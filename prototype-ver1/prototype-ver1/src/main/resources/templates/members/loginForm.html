@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>로그인</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css"> <!-- 외부 스타일 시트 연결 -->
+
+</head>
+<body>
+<h1>로그인</h1>
+<form id="loginForm">
+    <label for="email">사용자 이름:</label>
+    <input type="text" id="email" name="email" required><br><br>
+
+    <label for="password">비밀번호:</label>
+    <input type="password" id="password" name="password" required><br><br>
+
+    <button type="button" id="login-button">로그인</button>
+</form>
+
+<p id="login-status"></p>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 로그인 버튼 클릭 이벤트 처리
+        document.getElementById("login-button").addEventListener("click", function () {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            // 로그인 데이터 생성
+            const loginData = {
+                email: email,
+                password: password
+            };
+
+            // 서버로 POST 요청을 보냅니다.
+            fetch("http://localhost:8000/members/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(loginData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === "success" && data.accessToken && data.refreshToken) {
+                    // JWT 토큰을 쿠키에 저장
+                    document.cookie = `accessToken=${data.accessToken}; expires=Sun, 1 Jan 2023 00:00:00 UTC; path=/`;
+                    document.getElementById("login-status").innerText = "로그인 성공!";
+
+                    // 원하는 페이지로 리다이렉트 또는 작업을 수행할 수 있습니다.
+                    // 예: window.location.href = "#";
+                } else {
+                    document.getElementById("login-status").innerText = "로그인 실패. 다시 시도하세요.";
+                }
+            })
+            .catch(error => {
+                console.error("API 호출 오류:", error);
+            });
+        });
+    });
+</script>
+
+
+</body>
+</html>

@@ -11,8 +11,9 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class MemberListResponse {
-    private String userId;
-    private String userName;
+    private String email;
+    private String firstName;
+    private String lastName;
     private String phoneNumber;
     private Birth birth;
     private String gender;
@@ -20,11 +21,12 @@ public class MemberListResponse {
     private int point;
 
     @Builder
-    public MemberListResponse(String userId, String userName,
+    public MemberListResponse(String email, String firstName, String lastName,
                               String phoneNumber, Birth birth,
                               String gender, Address address, int point) {
-        this.userId = userId;
-        this.userName = userName;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.birth = birth;
         this.gender = gender;

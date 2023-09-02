@@ -6,3 +6,17 @@ spring:
     mongodb:
       host: localhost
       port: 27017
+  mail:
+    host: smtp.gmail.com # 1
+    port: 587 # 2
+    username: ${mail.username} # 3
+    password: ${mail.password} # 4
+    properties:
+      mail:
+        smtp:
+          auth: false # 5
+          timeout: 5000 # 6
+          starttls:
+            enable: true # 7
+jwt:
+  secret: 4FizXKCsqLU4lKXNtWLnyMBax57eVryor6zmf7wPUhF5SGc25Tk7VzKhm5KiPgj
