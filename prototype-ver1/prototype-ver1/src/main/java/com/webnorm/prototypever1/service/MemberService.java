@@ -1,6 +1,7 @@
 package com.webnorm.prototypever1.service;
 
 import com.webnorm.prototypever1.entity.Member;
+import com.webnorm.prototypever1.exception.exceptions.MemberEmailDuplicateException;
 import com.webnorm.prototypever1.repository.MemberRepository;
 import com.webnorm.prototypever1.security.provider.JwtTokenProvider;
 import com.webnorm.prototypever1.security.TokenInfo;
@@ -35,7 +36,7 @@ public class MemberService {
         member.encodePassword(passwordEncoder);
         Optional<Member> findMember = memberRepository.findByEmail(member.getEmail());
         if(findMember.isPresent())
-            throw new IllegalStateException("memberEmail dup exception");
+            throw new RuntimeException("member email duplicated");
         return memberRepository.save(member);
     }
 
