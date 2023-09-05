@@ -28,13 +28,10 @@ class MemberServiceTest {
     void 회원가입() {
         // given
         Member member = Member.builder()
-                .userId("test@test.com")
-                .userName("유저")
-                .password("test")
-                .phoneNumber("010-1234-1234")
-                .gender("남자")
-                .birth(new Birth(2000, 1, 1))
-                .marketingMessageConsent(new Msc(true, true))
+                .email("test@test.com")
+                .lastName("홍")
+                .firstName("길동")
+                .password("1234")
                 .build();
 
         // when
@@ -48,9 +45,7 @@ class MemberServiceTest {
     void 회원가입_중복검사() {
         // given
         Member member1 = Member.builder()
-                .userId("junkim").userName("유저").password("1234")
-                .phoneNumber("010-1234-1234").gender("남자")
-                .birth(new Birth(2000, 1, 1))
+                .email("duptest").lastName("홍").firstName("길동").password("1234")
                 .build();
     }
 

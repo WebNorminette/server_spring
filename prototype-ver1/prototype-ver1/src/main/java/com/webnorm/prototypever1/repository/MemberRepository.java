@@ -4,8 +4,9 @@ import com.webnorm.prototypever1.entity.Member;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface MemberRepository extends MongoRepository<Member, String> {
-
-    void findByUserId(String userId);
+    Optional<Member> findByEmail(String email);
 }
