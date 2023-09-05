@@ -59,7 +59,7 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String accessToken) {
         Claims claims = parseClaims(accessToken);   // 토큰 복호화
         if (claims.get("auth") == null) {           // 권한 정보 없는 토큰 예외처리
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+            throw new JwtException("권한 정보가 없는 토큰입니다.");
         }
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get("auth").toString().split(","))
@@ -85,13 +85,20 @@ public class JwtTokenProvider {
     // 토큰 정보를 검증하는 메소드
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);     // 토큰 유효성 확인 및 서명 검증
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (Exception e) {
-            throw e;
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            log.info("exception : " + e.getClass() + " Invalid JWT Token");
+            throw new JwtException("Invalid JWT Token", e);
+        } catch (ExpiredJwtException e) {
+            log.info("exception : " + e.getClass() + " Expired JWT Token");
+            throw new JwtException("Expired JWT Token", e);
+        } catch (UnsupportedJwtException e) {
+            log.info("exception : " + e.getClass() + " Unsupported JWT Token");
+            throw new JwtException("Unsupported JWT Token", e);
+        } catch (IllegalArgumentException e) {
+            log.info("exception : " + e.getClass() + " JWT claims string is empty");
+            throw new JwtException("JWT claims string is empty", e);
         }
     }
 }

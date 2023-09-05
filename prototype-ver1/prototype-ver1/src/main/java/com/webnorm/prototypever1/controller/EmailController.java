@@ -1,8 +1,10 @@
 package com.webnorm.prototypever1.controller;
 
+import com.webnorm.prototypever1.api.response.SingleResponse;
 import com.webnorm.prototypever1.service.EmailService;
 import com.webnorm.prototypever1.util.EmailMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +18,7 @@ public class EmailController {
 
     // 가입 환영 메일 전송
     @RequestMapping("/welcome")
-    public ResponseEntity sendWelcomeEmail(String to, String name) {
+    public SingleResponse sendWelcomeEmail(String to, String name) {
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(to)
                 .name(name)
@@ -24,6 +26,6 @@ public class EmailController {
                 .build();
         emailService.sendMail(emailMessage, "welcome");
 
-        return ResponseEntity.ok().build();
+        return new SingleResponse(HttpStatus.OK, "successfully send email");
     }
 }

@@ -54,8 +54,7 @@ public class MemberService {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(memberId, password);
         // 사용자 인증 (id로 사용자를 불러와 pw 체크)
-        Authentication authentication = null;
-        authentication = authenticationManagerBuilder
+        Authentication authentication = authenticationManagerBuilder
                 .getObject()
                 .authenticate(authenticationToken);
         // 인증 결과를 넣어 jwt 토큰 생성
