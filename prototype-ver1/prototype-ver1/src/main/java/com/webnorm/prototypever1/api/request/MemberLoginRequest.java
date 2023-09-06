@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class MemberLoginRequest {
-    String email;
-    String password;
+    private String email;
+    private String password;
 }

@@ -27,7 +27,7 @@ public class AccessDeniedHandler extends AccessDeniedHandlerImpl {
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("timeStamp", LocalDateTime.now().toString().toString());
         responseBody.put("status", HttpStatus.FORBIDDEN);
-        responseBody.put("message", "Access Denied");
+        responseBody.put("message", accessDeniedException.getMessage());
         response.getWriter().write(new ObjectMapper().writeValueAsString(responseBody));
     }
 }

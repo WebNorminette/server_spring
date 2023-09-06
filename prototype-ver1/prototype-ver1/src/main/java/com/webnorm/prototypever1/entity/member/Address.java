@@ -1,8 +1,7 @@
-package com.webnorm.prototypever1.entity;
+package com.webnorm.prototypever1.entity.member;
 
 
 import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
 
 public class Address {
     private ObjectId addressId;

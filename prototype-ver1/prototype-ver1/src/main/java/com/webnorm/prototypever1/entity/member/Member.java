@@ -1,4 +1,4 @@
-package com.webnorm.prototypever1.entity;
+package com.webnorm.prototypever1.entity.member;
 
 import com.mongodb.lang.NonNull;
 import lombok.*;
@@ -13,7 +13,6 @@ import org.springframework.util.Assert;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Document(collection = "members")

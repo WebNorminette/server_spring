@@ -11,7 +11,9 @@ public enum AuthException implements ExceptionCode {
 
     INVALID_SIGN(HttpStatus.UNAUTHORIZED, "invalid token signature"),
     MALFORMED_TOKEN(HttpStatus.UNAUTHORIZED, "malformed token"),
-    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "expired token");
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "expired token"),
+    TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "cannot find refresh token"),
+    NO_AUTH_IN_TOKEN(HttpStatus.UNAUTHORIZED, "token has no authority");
 
     private final HttpStatus status;
     private final String message;

@@ -29,3 +29,4 @@ public class EmailController {
         return new SingleResponse(HttpStatus.OK, "successfully send email");
     }
 }
+

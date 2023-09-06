@@ -2,11 +2,7 @@ package com.webnorm.prototypever1.api.request;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.mongodb.lang.NonNull;
-import com.webnorm.prototypever1.entity.Birth;
-import com.webnorm.prototypever1.entity.Msc;
 import lombok.*;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.util.Assert;
 
 @Data
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)

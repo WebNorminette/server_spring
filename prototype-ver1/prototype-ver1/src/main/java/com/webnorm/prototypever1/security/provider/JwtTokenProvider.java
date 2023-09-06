@@ -1,5 +1,7 @@
 package com.webnorm.prototypever1.security.provider;
 
+import com.webnorm.prototypever1.exception.Exceptions.AuthException;
+import com.webnorm.prototypever1.exception.Exceptions.BusinessLogicException;
 import com.webnorm.prototypever1.security.TokenInfo;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -32,8 +34,8 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // 유저 정보를 사용해 AccessToken과 RefreshToken 생성하는 메소드
-    public TokenInfo generateToken(Authentication authentication) {
+    // 유저 정보를 사용해 AccessToken 생성
+    public String generateAccessToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));  // 권한 가져와서 저장
@@ -44,22 +46,24 @@ public class JwtTokenProvider {
                 .setExpiration(new Date(now + 60 * 60 * 1000))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();     // accessToken 생성
+        return accessToken;
+    }
+
+    // RefreshToken 생성
+    public String generateRefreshToken(Authentication authentication) {
+        long now = (new Date()).getTime();
         String refreshToken = Jwts.builder()
                 .setExpiration(new Date(now + 60 * 60 * 1000))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();     // refreshToken 생성
-        return TokenInfo.builder()
-                .grantType("Bearer")
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+        return refreshToken;
     }
 
     // JWT 토큰을 복호화해서 토큰 내부의 정보를 추출하는 메소드
     public Authentication getAuthentication(String accessToken) {
         Claims claims = parseClaims(accessToken);   // 토큰 복호화
         if (claims.get("auth") == null) {           // 권한 정보 없는 토큰 예외처리
-            throw new JwtException("권한 정보가 없는 토큰입니다.");
+            throw new BusinessLogicException(AuthException.NO_AUTH_IN_TOKEN);
         }
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get("auth").toString().split(","))
