@@ -1,9 +1,8 @@
 package com.webnorm.prototypever1.api.response;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.webnorm.prototypever1.entity.Address;
-import com.webnorm.prototypever1.entity.Birth;
-import com.webnorm.prototypever1.entity.Member;
+import com.webnorm.prototypever1.entity.member.Address;
+import com.webnorm.prototypever1.entity.member.Birth;
 import lombok.*;
 
 

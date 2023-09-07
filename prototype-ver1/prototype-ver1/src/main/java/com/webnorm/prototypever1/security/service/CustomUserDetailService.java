@@ -1,6 +1,6 @@
 package com.webnorm.prototypever1.security.service;
 
-import com.webnorm.prototypever1.entity.Member;
+import com.webnorm.prototypever1.entity.member.Member;
 import com.webnorm.prototypever1.exception.Exceptions.BusinessLogicException;
 import com.webnorm.prototypever1.exception.Exceptions.MemberException;
 import com.webnorm.prototypever1.repository.MemberRepository;

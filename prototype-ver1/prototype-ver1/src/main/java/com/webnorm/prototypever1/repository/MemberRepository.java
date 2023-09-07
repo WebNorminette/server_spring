@@ -1,6 +1,6 @@
 package com.webnorm.prototypever1.repository;
 
-import com.webnorm.prototypever1.entity.Member;
+import com.webnorm.prototypever1.entity.member.Member;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.webnorm.prototypever1.entity;
+package com.webnorm.prototypever1.entity.member;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.AllArgsConstructor;

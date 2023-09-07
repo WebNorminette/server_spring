@@ -18,5 +18,9 @@ spring:
           timeout: 5000 # 6
           starttls:
             enable: true # 7
+  redis:
+    host: localhost
+    port: 6379
+    password: ${redis.password}
 jwt:
-  secret: 4FizXKCsqLU4lKXNtWLnyMBax57eVryor6zmf7wPUhF5SGc25Tk7VzKhm5KiPgj
+  secret: ${jwt.secret}
