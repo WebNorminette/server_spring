@@ -15,6 +15,8 @@ import java.io.Serializable;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @RedisHash(value = "refreshToken")
 public class RefreshToken implements Serializable {
+    private final long HOUR = 60 * 60;
+
     @Id
     private String id;
 
@@ -22,7 +24,7 @@ public class RefreshToken implements Serializable {
     private String accessToken;
     private String refreshToken;
     @TimeToLive
-    private long expiredTime = 60 * 10;
+    private long expiredTime = 12 * HOUR;
 
     @Builder
     public RefreshToken(String id, String accessToken, String refreshToken) {

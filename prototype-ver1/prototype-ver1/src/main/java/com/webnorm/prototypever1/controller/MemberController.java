@@ -9,6 +9,7 @@ import com.webnorm.prototypever1.entity.member.Member;
 import com.webnorm.prototypever1.entity.redis.RefreshToken;
 import com.webnorm.prototypever1.exception.Exceptions.AuthException;
 import com.webnorm.prototypever1.exception.Exceptions.BusinessLogicException;
+import com.webnorm.prototypever1.security.oauth.SocialType;
 import com.webnorm.prototypever1.service.MemberService;
 import com.webnorm.prototypever1.security.TokenInfo;
 import com.webnorm.prototypever1.service.RefreshTokenService;
@@ -34,13 +35,13 @@ public class MemberController {
     @PostMapping
     public SingleResponse signup(@RequestBody MemberSignupRequest request) {
         Member member = Member.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
+                .name(request.getName())
                 .email(request.getEmail())
                 .password(request.getPassword())
+                .socialType(SocialType.ORIGIN)
                 .build();
         memberService.createMember(member);
-        emailController.sendWelcomeEmail(member.getEmail(), member.getFirstName() + " " + member.getLastName());
+        emailController.sendWelcomeEmail(member.getEmail(), member.getName());
         return new SingleResponse(HttpStatus.OK, "signup success");
     }
 
@@ -52,8 +53,8 @@ public class MemberController {
         List<MemberListResponse> memberList = findMembers.stream()
                 .map(m -> MemberListResponse.builder()
                         .email(m.getEmail())
-                        .firstName(m.getFirstName())
-                        .lastName(m.getLastName())
+                        .name(m.getName())
+                        .socialType(m.getSocialType())
                         .build())
                 .collect(Collectors.toList());
         return new MultiResponse(HttpStatus.OK, "successfully found memberList", memberList);

@@ -39,7 +39,7 @@ public class MemberService {
     */
     public Member createMember(Member member) {
         member.encodePassword(passwordEncoder);
-        Optional<Member> findMember = memberRepository.findByEmail(member.getEmail());
+        Optional<Member> findMember = memberRepository.findByEmailAndSocialType(member.getEmail(), member.getSocialType());
         if(findMember.isPresent())
             throw new BusinessLogicException(MemberException.USER_EXIST);
         return memberRepository.save(member);
@@ -67,7 +67,7 @@ public class MemberService {
         refreshTokenRepository.save(
                 RefreshToken.builder()
                         .id(memberId)
-                        .refreshToken(jwtTokenProvider.generateRefreshToken(authentication))
+                        .refreshToken(jwtTokenProvider.generateRefreshToken())
                         .accessToken(accessToken)
                         .build()
         );

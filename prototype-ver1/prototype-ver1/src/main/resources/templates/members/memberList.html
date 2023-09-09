@@ -21,25 +21,36 @@
 </table>
 
 <script>
+
+    // JWT 토큰을 가져옵니다.
+    const jwtToken = document.cookie;
+
     // API 엔드포인트 설정 (실제 엔드포인트로 변경해야 합니다).
     const apiUrl = 'http://localhost:8000/members';
 
-    // JWT 토큰을 로컬 스토리지에서 가져오는 함수.
-    function getJwtToken() {
-        return localStorage.getItem('jwtToken');
-    }
+    // HTTP 요청 헤더에 JWT 토큰을 추가합니다.
+    const headers = {
+        Authorization: `Bearer ${jwtToken}` // Bearer 스킴과 함께 토큰을 추가합니다.
+    };
+
+    // 요청을 보낼 URL 및 다른 요청 구성을 정의합니다.
+    const requestOptions = {
+        method: "GET", // HTTP 메서드 설정 (GET, POST, 등)
+        headers: headers // 위에서 설정한 헤더 추가
+    };
 
     // Fetch API를 사용하여 회원 정보를 가져오는 함수.
     function fetchMembers() {
-        // JWT 토큰을 가져옵니다.
-        const jwtToken = getJwtToken();
-
         // JWT 토큰이 존재하는 경우에만 요청을 보냅니다.
         if (jwtToken) {
-            fetch(apiUrl, {
-                headers: {
-                    'Authorization': `Bearer ${jwtToken}`, // JWT 토큰을 포함한 Authorization 헤더
-                    'Content-Type': 'application/json'
+            fetch(apiUrl, requestOptions)
+            .then(response => {
+                if (response.status === 200) {
+                    // 요청이 성공하면 응답을 처리합니다.
+                    return response.json();
+                } else {
+                    // 요청이 실패하면 오류 처리를 수행합니다.
+                    throw new Error("Request failed");
                 }
             })
             .then(response => response.json()) // JSON 형식으로 응답을 파싱합니다.

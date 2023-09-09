@@ -16,6 +16,11 @@
     <button type="button" id="login-button">로그인</button>
 </form>
 
+<a href="/oauth2/authorization/google" class="btn btn-sm btn-success active" role="button">Google Login</a><br>
+<a href="/oauth2/authorization/naver" class="btn btn-sm btn-success active" role="button">Naver Login</a><br>
+<a href="/oauth2/authorization/kakao" class="btn btn-sm btn-success active" role="button">Kakao Login</a><br>
+
+
 <p id="login-status"></p>
 <p id="token-info"></p>
 
@@ -53,7 +58,6 @@
                     const tokenInfo = `
                         Grant Type: ${tokenData.grantType}
                         Access Token: ${tokenData.accessToken}
-                        Refresh Token: ${tokenData.refreshToken}
                     `;
                     document.getElementById("token-info").innerText = tokenInfo;
                 } else {

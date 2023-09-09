@@ -21,8 +21,7 @@ class MemberServiceTest {
         // given
         Member member = Member.builder()
                 .email("test@test.com")
-                .lastName("홍")
-                .firstName("길동")
+                .name("홍길동")
                 .password("1234")
                 .build();
 
@@ -37,7 +36,7 @@ class MemberServiceTest {
     void 회원가입_중복검사() {
         // given
         Member member1 = Member.builder()
-                .email("duptest").lastName("홍").firstName("길동").password("1234")
+                .email("duptest").name("홍길동").password("1234")
                 .build();
     }
 

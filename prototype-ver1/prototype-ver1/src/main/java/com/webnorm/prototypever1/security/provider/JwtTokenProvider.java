@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenProvider {
     private final Key key;
+    private final long HOUR = 60 * 60 * 1000;
 
     // 생성자로 secretKey 디코딩 -> 바이트 배열(keyBytes)
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
@@ -43,17 +44,17 @@ public class JwtTokenProvider {
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth", authorities)
-                .setExpiration(new Date(now + 60 * 60 * 1000))
+                .setExpiration(new Date(now + HOUR))  // 만료기한 1시간으로 설정
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();     // accessToken 생성
         return accessToken;
     }
 
     // RefreshToken 생성
-    public String generateRefreshToken(Authentication authentication) {
+    public String generateRefreshToken() {
         long now = (new Date()).getTime();
         String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + 60 * 60 * 1000))
+                .setExpiration(new Date(now + 12 * HOUR))  // 만료기한 12시간으로 설정
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();     // refreshToken 생성
         return refreshToken;
