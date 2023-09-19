@@ -1,15 +1,13 @@
 package com.webnorm.prototypever1.service;
 
-import com.webnorm.prototypever1.entity.redis.RefreshToken;
+import com.webnorm.prototypever1.security.redis.RedisTokenInfo;
 import com.webnorm.prototypever1.exception.Exceptions.AuthException;
 import com.webnorm.prototypever1.exception.Exceptions.BusinessLogicException;
-import com.webnorm.prototypever1.repository.RefreshTokenRepository;
+import com.webnorm.prototypever1.repository.RedisTokenInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -17,25 +15,25 @@ import java.util.Optional;
 /*
 * Redis 에서 Refresh 토큰을 관리하는 Service
 * */
-public class RefreshTokenService {
-    private final RefreshTokenRepository refreshTokenRepository;
+public class RedisTokenInfoService {
+    private final RedisTokenInfoRepository      redisTokenInfoRepository;
 
     @Transactional
-    public void saveRefreshToken(RefreshToken refreshToken) {
-        refreshTokenRepository.save(refreshToken);
+    public void saveTokenInfo(RedisTokenInfo redisTokenInfo) {
+        redisTokenInfoRepository.save(redisTokenInfo);
     }
 
     @Transactional
-    public RefreshToken findByAccessToken(String accessToken) {
-        return refreshTokenRepository.findByAccessToken(accessToken)
+    public RedisTokenInfo findByRefreshToken(String refreshToken) {
+        return redisTokenInfoRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new BusinessLogicException(AuthException.TOKEN_NOT_FOUND));
     }
 
     @Transactional
     public void removeRefreshTokenByAccessToken(String accessToken) {
-        RefreshToken refreshToken = refreshTokenRepository
+        RedisTokenInfo redisTokenInfo = redisTokenInfoRepository
                 .findByAccessToken(accessToken)
                 .orElseThrow(() -> new BusinessLogicException(AuthException.TOKEN_NOT_FOUND));
-        refreshTokenRepository.delete(refreshToken);
+        redisTokenInfoRepository.delete(redisTokenInfo);
     }
 }

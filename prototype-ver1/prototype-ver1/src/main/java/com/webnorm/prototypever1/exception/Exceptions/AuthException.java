@@ -13,7 +13,8 @@ public enum AuthException implements ExceptionCode {
     MALFORMED_TOKEN(HttpStatus.UNAUTHORIZED, "malformed token"),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "expired token"),
     TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "cannot find refresh token"),
-    NO_AUTH_IN_TOKEN(HttpStatus.UNAUTHORIZED, "token has no authority");
+    NO_AUTH_IN_TOKEN(HttpStatus.UNAUTHORIZED, "token has no authority"),
+    OAUTH_CANOOT_FIND_USERNAME(HttpStatus.UNAUTHORIZED, "cannot find username from oauth2");
 
     private final HttpStatus status;
     private final String message;

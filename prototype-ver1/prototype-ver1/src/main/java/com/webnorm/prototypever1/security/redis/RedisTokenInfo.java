@@ -1,4 +1,4 @@
-package com.webnorm.prototypever1.entity.redis;
+package com.webnorm.prototypever1.security.redis;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -13,25 +13,28 @@ import java.io.Serializable;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@RedisHash(value = "refreshToken")
-public class RefreshToken implements Serializable {
+@RedisHash(value = "redisTokenInfo")
+public class RedisTokenInfo implements Serializable {
+
     @Id
     private String id;
 
     @Indexed
     private String accessToken;
+    @Indexed
     private String refreshToken;
     @TimeToLive
-    private long expiredTime = 60 * 10;
+    private long expiredTime = 12 * 60 * 60;
 
     @Builder
-    public RefreshToken(String id, String accessToken, String refreshToken) {
+    public RedisTokenInfo(String id, String accessToken, String refreshToken) {
         this.id = id;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
 
-    public void updateAccessToken(String accessToken) {
+    public void update(String accessToken, String refreshToken) {
+        this.refreshToken = refreshToken;
         this.accessToken = accessToken;
     }
 }

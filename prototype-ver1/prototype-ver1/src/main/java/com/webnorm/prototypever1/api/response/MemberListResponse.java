@@ -1,8 +1,7 @@
 package com.webnorm.prototypever1.api.response;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.webnorm.prototypever1.entity.member.Address;
-import com.webnorm.prototypever1.entity.member.Birth;
+import com.webnorm.prototypever1.security.oauth.SocialType;
 import lombok.*;
 
 
@@ -11,25 +10,13 @@ import lombok.*;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class MemberListResponse {
     private String email;
-    private String firstName;
-    private String lastName;
-    private String phoneNumber;
-    private Birth birth;
-    private String gender;
-    private Address address;
-    private int point;
+    private String name;
+    private SocialType socialType;
 
     @Builder
-    public MemberListResponse(String email, String firstName, String lastName,
-                              String phoneNumber, Birth birth,
-                              String gender, Address address, int point) {
+    public MemberListResponse(String email, String name, SocialType socialType) {
         this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
-        this.birth = birth;
-        this.gender = gender;
-        this.address = address;
-        this.point = point;
+        this.name = name;
+        this.socialType = socialType;
     }
 }

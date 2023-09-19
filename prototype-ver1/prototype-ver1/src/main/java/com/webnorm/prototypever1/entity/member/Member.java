@@ -1,6 +1,7 @@
 package com.webnorm.prototypever1.entity.member;
 
 import com.mongodb.lang.NonNull;
+import com.webnorm.prototypever1.security.oauth.SocialType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -26,37 +27,31 @@ public class Member implements UserDetails {
    @NonNull
    private String password;
    @NonNull
-   private String lastName;
+   private String name;
    @NonNull
-   private String firstName;
+   private SocialType socialType;    // 소셜로그인 구분
 
    @NonNull
    private List<String> roles = new ArrayList<>();
 
-   private String phoneNumber;
-   private Birth birth;
-   private String gender;
-   private Msc marketingMessageConsent;
-
-   private Address address;
-   private int  point;
+   // 이하는 현재 미사용중인 필드
+//   private String phoneNumber;
+//   private String gender;
+//   private Msc marketingMessageConsent;
+//   private Address address;
+//   private int  point;
 
    @Builder
-   public Member(String email, String password, String lastName, String firstName,
-                 String phoneNumber, Birth birth, String gender, Msc marketingMessageConsent) {
+   public Member(String email, String password, String name, SocialType socialType) {
        Assert.hasText(email, "email cannot be empty");
-       Assert.hasText(lastName, "firstName cannot be empty");
-       Assert.hasText(firstName, "lastName cannot be empty");
-       Assert.hasText(password, "password cannot be empty");
+       Assert.hasText(name, "name cannot be empty");
+       Assert.notNull(socialType, "socialType cannot be empty");
+       //Assert.hasText(password, "password cannot be empty");
 
        this.email = email;
-       this.lastName = lastName;
-       this.firstName = firstName;
+       this.name = name;
        this.password = password;
-       this.phoneNumber = phoneNumber;
-       this.birth = birth;
-       this.gender = gender;
-       this.marketingMessageConsent = marketingMessageConsent;
+       this.socialType = socialType;
        this.roles.add("USER");
    }
 
