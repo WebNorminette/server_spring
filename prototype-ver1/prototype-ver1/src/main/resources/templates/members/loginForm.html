@@ -53,11 +53,13 @@
                     // 토큰 데이터를 쿠키에 저장합니다.
                     const tokenData = data.data;
                     document.cookie = `accessToken=${tokenData.accessToken}; path=/;`;
+                    document.cookie = `redisTokenInfo=${tokenData.redisTokenInfo}; path=/;`;
 
                     // 토큰 정보를 표시합니다.
                     const tokenInfo = `
                         Grant Type: ${tokenData.grantType}
                         Access Token: ${tokenData.accessToken}
+                        Refresh Token: ${tokenData.redisTokenInfo}
                     `;
                     document.getElementById("token-info").innerText = tokenInfo;
                 } else {

@@ -53,8 +53,10 @@ public class SecurityConfig {
                         // 위에 두줄은 삭제 예정
                         .requestMatchers("/", "/home", "/css/**").permitAll()
                         .requestMatchers("/members/signup", "/members/loginPage").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/members").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/members/login/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/members/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/members/reissue").permitAll()
                         .anyRequest().authenticated()
                 )
                 // filter, handler 설정

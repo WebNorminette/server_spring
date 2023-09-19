@@ -24,15 +24,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
-
-//        String[] excludePath = {
-//                "/members/login",
-//                "/members",
-//                "/",
-//                "/home"
-//        };
-//        String path = request.getRequestURI();
-//        if (Arrays.stream(excludePath).anyMatch(path::matches)) return;
         response.setContentType("application/json; charset=UTF-8");
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         Map<String, Object> responseBody = new HashMap<>();
@@ -40,6 +31,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         responseBody.put("status", HttpStatus.UNAUTHORIZED);
         responseBody.put("message", authException.getMessage());
         response.getWriter().write(new ObjectMapper().writeValueAsString(responseBody));
+        log.info(request.getHeader("Authorization"));
 //        log.info(authException.getMessage() + "-> Handled by JwtAuthenticationEntryPoint");
     }
 }

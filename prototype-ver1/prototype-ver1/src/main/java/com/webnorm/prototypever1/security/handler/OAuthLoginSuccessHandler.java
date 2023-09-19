@@ -1,8 +1,8 @@
 package com.webnorm.prototypever1.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.webnorm.prototypever1.entity.redis.RefreshToken;
-import com.webnorm.prototypever1.repository.RefreshTokenRepository;
+import com.webnorm.prototypever1.security.redis.RedisTokenInfo;
+import com.webnorm.prototypever1.repository.RedisTokenInfoRepository;
 import com.webnorm.prototypever1.security.TokenInfo;
 import com.webnorm.prototypever1.security.oauth.CustomOAuth2User;
 import com.webnorm.prototypever1.security.provider.JwtTokenProvider;
@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -21,14 +20,13 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class OAuthLoginSuccessHandler implements AuthenticationSuccessHandler {
     private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RedisTokenInfoRepository redisTokenInfoRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -55,9 +53,9 @@ public class OAuthLoginSuccessHandler implements AuthenticationSuccessHandler {
         String accessToken = jwtTokenProvider.generateAccessToken(authentication);
         // refresh token 생성
         String refreshToken = jwtTokenProvider.generateRefreshToken();
-        //
-        refreshTokenRepository.save(
-                RefreshToken.builder()
+        // redis 에 refreshToken 저장
+        redisTokenInfoRepository.save(
+                RedisTokenInfo.builder()
                         .id(oAuth2User.getEmail())
                         .refreshToken(refreshToken)
                         .accessToken(accessToken)
@@ -66,6 +64,7 @@ public class OAuthLoginSuccessHandler implements AuthenticationSuccessHandler {
         // TokenInfo 생성 후 리턴
         return TokenInfo.builder()
                 .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .grantType("Bearer")
                 .build();
     }
