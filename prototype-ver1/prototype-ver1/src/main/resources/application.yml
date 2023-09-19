@@ -11,8 +11,8 @@ spring:
   mail:
     host: smtp.gmail.com # 1
     port: 587 # 2
-    username: ${mail.username} # 3
-    password: ${mail.password} # 4
+    username: ${MAIL_USERNAME} # 3
+    password: ${MAIL_PASSWORD} # 4
     properties:
       mail:
         smtp:
@@ -26,20 +26,20 @@ spring:
       client:
         registration:
           google:
-            client-id: 694957007952-6pm2tud1l6oe23of1ge6dga5cuvdq6nr.apps.googleusercontent.com
-            client-secret: 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
+            client-id: ${GOOGLE_CLIENTID}
+            client-secret: ${GOOGLE_CLIENTSECRET}
             authorization-grant-type: authorization_code
             scope: email, profile
           naver:
-            client-id: 1I7Ir_0uYeDFomchqEmn
-            client-secret: 1oyKHjTBc_
+            client-id: ${NAVER_CLIENTID}
+            client-secret: ${NAVER_CLIENTSECRET}
             redirect-uri: http://localhost:8000/login/oauth2/code/naver
             authorization-grant-type: authorization_code
             scope: email, name
             client-name: Naver
           kakao:
-            client-id: 077e3be4f9345abb6e0f0c11df7d9b46
-            client-secret: vnC4pfeh41shwYVo1C8xuRlAtQwksgZn
+            client-id: ${KAKAO_CLIENTID}
+            client-secret: ${KAKAO_CLIENTSECRET}
             redirect-uri: http://localhost:8000/login/oauth2/code/kakao
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
@@ -60,8 +60,8 @@ spring:
   redis:
     host: localhost
     port: 6379
-    password: ${redis.password}
+    password: ${REDIS_PASSWORD}
 
 # jwt 설정
 jwt:
-  secret: ${jwt.secret}
+  secret: ${JWT_SECRET}

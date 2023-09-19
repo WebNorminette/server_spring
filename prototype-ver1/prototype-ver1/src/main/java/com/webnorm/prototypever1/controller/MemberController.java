@@ -71,7 +71,7 @@ public class MemberController {
 
     // jwt token 재발급 (reissue) : atk 만료시 rtk 로 재발급 -> atk, rtk 모두 재발급 실행
     @GetMapping("/reissue")
-    public SingleResponse reissue(@RequestHeader("abc") String refreshToken) {
+    public SingleResponse reissue(@RequestHeader("Authorization") String refreshToken) {
         // rtk 추출
         String resolvedRefreshToken;
         if (StringUtils.hasText(refreshToken) && refreshToken.startsWith("Bearer"))
