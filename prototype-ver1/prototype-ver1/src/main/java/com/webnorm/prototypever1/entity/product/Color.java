@@ -1,4 +1,4 @@
-package com.webnorm.prototypever1.entity.collection;
+package com.webnorm.prototypever1.entity.product;
 
 import lombok.*;
 
