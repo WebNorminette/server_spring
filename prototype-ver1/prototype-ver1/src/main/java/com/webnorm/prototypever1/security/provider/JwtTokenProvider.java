@@ -44,7 +44,7 @@ public class JwtTokenProvider {
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth", authorities)
-                .setExpiration(new Date(now + HOUR))  // 만료기한 1시간으로 설정
+                .setExpiration(new Date(now + 3 * HOUR))  // 만료기한 3시간으로 설정
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();     // accessToken 생성
         return accessToken;

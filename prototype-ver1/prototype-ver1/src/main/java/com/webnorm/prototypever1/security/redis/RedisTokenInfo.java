@@ -24,7 +24,7 @@ public class RedisTokenInfo implements Serializable {
     @Indexed
     private String refreshToken;
     @TimeToLive
-    private long expiredTime = 12 * 60 * 60;
+    private long expiredTime = 12 * 60 * 60;    // 만료기한 12시간으로 설정
 
     @Builder
     public RedisTokenInfo(String id, String accessToken, String refreshToken) {

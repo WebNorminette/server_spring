@@ -50,10 +50,9 @@ public class SecurityConfig {
                 )
                 // api request 설정
                 .authorizeHttpRequests(request -> request
+                        .requestMatchers(HttpMethod.GET, "/home", "/css/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/members/signup", "/members/loginPage").permitAll()
                         // 위에 두줄은 삭제 예정
-                        .requestMatchers("/", "/home", "/css/**").permitAll()
-                        .requestMatchers("/members/signup", "/members/loginPage").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/members").permitAll()
                         .requestMatchers(HttpMethod.POST, "/members/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/members/reissue").permitAll()

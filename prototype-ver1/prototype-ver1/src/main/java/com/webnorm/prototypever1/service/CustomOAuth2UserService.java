@@ -39,7 +39,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // authAttributes : OAuth2User 의 attribute 보관
         OAuthAttributes attributes = OAuthAttributes.of(socialType, userNameAttributeName, oAuth2User.getAttributes());
 
-        // Member 생성
+        // Member 생성 후 db에 저장 또는 업데이트
         Member member = saveOrUpdate(attributes, socialType);
 
         // Member 로 OAuth2User 생성해서 리턴
