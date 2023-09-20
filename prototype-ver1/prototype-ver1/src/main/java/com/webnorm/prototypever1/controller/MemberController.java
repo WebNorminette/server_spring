@@ -6,6 +6,7 @@ import com.webnorm.prototypever1.api.response.MemberListResponse;
 import com.webnorm.prototypever1.api.response.MultiResponse;
 import com.webnorm.prototypever1.api.response.SingleResponse;
 import com.webnorm.prototypever1.entity.member.Member;
+import com.webnorm.prototypever1.exception.Exceptions.MemberException;
 import com.webnorm.prototypever1.security.redis.RedisTokenInfo;
 import com.webnorm.prototypever1.exception.Exceptions.AuthException;
 import com.webnorm.prototypever1.exception.Exceptions.BusinessLogicException;
@@ -13,6 +14,7 @@ import com.webnorm.prototypever1.security.oauth.SocialType;
 import com.webnorm.prototypever1.service.MemberService;
 import com.webnorm.prototypever1.security.TokenInfo;
 import com.webnorm.prototypever1.service.RedisTokenInfoService;
+import com.webnorm.prototypever1.util.DataPatternMatcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @RestController
@@ -34,6 +37,9 @@ public class MemberController {
     // 회원가입 : request(dto)를 member 엔티티에 매핑, 메일 발송
     @PostMapping
     public SingleResponse signup(@RequestBody MemberSignupRequest request) {
+        DataPatternMatcher.doesMatch(request.getEmail(), "email");
+        DataPatternMatcher.doesMatch(request.getName(), "name");
+        DataPatternMatcher.doesMatch(request.getPassword(), "password");
         Member member = Member.builder()
                 .name(request.getName())
                 .email(request.getEmail())
@@ -71,7 +77,7 @@ public class MemberController {
 
     // jwt token 재발급 (reissue) : atk 만료시 rtk 로 재발급 -> atk, rtk 모두 재발급 실행
     @GetMapping("/reissue")
-    public SingleResponse reissue(@RequestHeader("abc") String refreshToken) {
+    public SingleResponse reissue(@RequestHeader("Authorization") String refreshToken) {
         // rtk 추출
         String resolvedRefreshToken;
         if (StringUtils.hasText(refreshToken) && refreshToken.startsWith("Bearer"))

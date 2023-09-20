@@ -12,8 +12,10 @@ public enum MemberException implements ExceptionCode {
     USER_EXIST(HttpStatus.CONFLICT, "User is already Exist!"),
     MAILKEY_MISMATCH(HttpStatus.CONFLICT, "Incorrect password."),
     INCORRECT_PASSWORD(HttpStatus.CONFLICT, "Password"),
-    NOT_YET_AUTHENTICATE_EMAIL(HttpStatus.FORBIDDEN, "Do Not Authenticate Email Yet"),
-    NOT_ACTIVE_USER(HttpStatus.FORBIDDEN, "This User Is Not Active");
+    NOT_ACTIVE_USER(HttpStatus.FORBIDDEN, "This User Is Not Active"),
+    EMAIL_PATTERN_INCORRECT(HttpStatus.BAD_REQUEST, "Incorrect email pattern"),
+    PASSWORD_PATTERN_INCORRECT(HttpStatus.BAD_REQUEST, "Incorrect password pattern"),
+    NAME_PATTERN_INCORRECT(HttpStatus.BAD_REQUEST, "Incorrect name pattern");
 
     private final HttpStatus status;
     private final String message;

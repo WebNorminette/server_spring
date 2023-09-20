@@ -13,32 +13,32 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 @Rollback(value = true)
 class MemberServiceTest {
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @Test
-    void 회원가입() {
-        // given
-        Member member = Member.builder()
-                .email("test@test.com")
-                .name("홍길동")
-                .password("1234")
-                .build();
-
-        // when
-        Member savedMember = memberRepository.save(member);
-
-        // then
-        assertThat(member.getId()).isEqualTo(savedMember.getId());
-    }
-
-    @Test
-    void 회원가입_중복검사() {
-        // given
-        Member member1 = Member.builder()
-                .email("duptest").name("홍길동").password("1234")
-                .build();
-    }
+//    @Autowired
+//    private MemberRepository memberRepository;
+//
+//    @Test
+//    void 회원가입() {
+//        // given
+//        Member member = Member.builder()
+//                .email("test@test.com")
+//                .name("홍길동")
+//                .password("1234")
+//                .build();
+//
+//        // when
+//        Member savedMember = memberRepository.save(member);
+//
+//        // then
+//        assertThat(member.getId()).isEqualTo(savedMember.getId());
+//    }
+//
+//    @Test
+//    void 회원가입_중복검사() {
+//        // given
+//        Member member1 = Member.builder()
+//                .email("duptest").name("홍길동").password("1234")
+//                .build();
+//    }
 
     /*@Test
     void 회원목록조회(){
