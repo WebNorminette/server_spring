@@ -2,9 +2,9 @@ package com.webnorm.prototypever1.service;
 
 import com.webnorm.prototypever1.entity.member.Member;
 import com.webnorm.prototypever1.security.redis.RedisTokenInfo;
-import com.webnorm.prototypever1.exception.Exceptions.AuthException;
-import com.webnorm.prototypever1.exception.Exceptions.BusinessLogicException;
-import com.webnorm.prototypever1.exception.Exceptions.MemberException;
+import com.webnorm.prototypever1.exception.exceptions.AuthException;
+import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
+import com.webnorm.prototypever1.exception.exceptions.MemberException;
 import com.webnorm.prototypever1.repository.MemberRepository;
 import com.webnorm.prototypever1.repository.RedisTokenInfoRepository;
 import com.webnorm.prototypever1.security.provider.JwtTokenProvider;

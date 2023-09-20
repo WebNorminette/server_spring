@@ -1,4 +1,4 @@
-package com.webnorm.prototypever1.exception.Exceptions;
+package com.webnorm.prototypever1.exception.exceptions;
 
 import com.webnorm.prototypever1.exception.ExceptionCode;
 import lombok.Getter;

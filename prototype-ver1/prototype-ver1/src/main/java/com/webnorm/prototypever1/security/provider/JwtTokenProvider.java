@@ -1,12 +1,10 @@
 package com.webnorm.prototypever1.security.provider;
 
-import com.webnorm.prototypever1.exception.Exceptions.AuthException;
-import com.webnorm.prototypever1.exception.Exceptions.BusinessLogicException;
-import com.webnorm.prototypever1.security.TokenInfo;
+import com.webnorm.prototypever1.exception.exceptions.AuthException;
+import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SecurityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

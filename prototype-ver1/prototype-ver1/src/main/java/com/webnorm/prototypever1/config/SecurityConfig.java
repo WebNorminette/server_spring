@@ -53,9 +53,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/home", "/css/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/members/signup", "/members/loginPage").permitAll()
                         // 위에 두줄은 삭제 예정
-                        .requestMatchers(HttpMethod.POST, "/members").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/members/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/members", "members/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/members/reissue").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/collections").permitAll()
                         .anyRequest().authenticated()
                 )
                 // filter, handler 설정

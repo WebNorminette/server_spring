@@ -1,14 +1,8 @@
 package com.webnorm.prototypever1.service;
 
 
-import com.webnorm.prototypever1.entity.member.Member;
-import com.webnorm.prototypever1.repository.MemberRepository;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
-
-import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Rollback(value = true)

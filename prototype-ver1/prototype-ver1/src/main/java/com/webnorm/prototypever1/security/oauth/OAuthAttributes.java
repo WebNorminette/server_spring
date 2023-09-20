@@ -1,8 +1,8 @@
 package com.webnorm.prototypever1.security.oauth;
 
 import com.webnorm.prototypever1.entity.member.Member;
-import com.webnorm.prototypever1.exception.Exceptions.AuthException;
-import com.webnorm.prototypever1.exception.Exceptions.BusinessLogicException;
+import com.webnorm.prototypever1.exception.exceptions.AuthException;
+import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
 import lombok.Builder;
 import lombok.Getter;
 

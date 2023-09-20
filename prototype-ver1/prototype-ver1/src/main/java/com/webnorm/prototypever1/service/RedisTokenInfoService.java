@@ -1,8 +1,8 @@
 package com.webnorm.prototypever1.service;
 
 import com.webnorm.prototypever1.security.redis.RedisTokenInfo;
-import com.webnorm.prototypever1.exception.Exceptions.AuthException;
-import com.webnorm.prototypever1.exception.Exceptions.BusinessLogicException;
+import com.webnorm.prototypever1.exception.exceptions.AuthException;
+import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
 import com.webnorm.prototypever1.repository.RedisTokenInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

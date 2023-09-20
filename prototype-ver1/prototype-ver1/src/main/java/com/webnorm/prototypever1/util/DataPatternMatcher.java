@@ -1,9 +1,7 @@
 package com.webnorm.prototypever1.util;
 
-import com.webnorm.prototypever1.entity.member.Member;
-import com.webnorm.prototypever1.exception.Exceptions.BusinessLogicException;
-import com.webnorm.prototypever1.exception.Exceptions.MemberException;
-import org.springframework.stereotype.Component;
+import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
+import com.webnorm.prototypever1.exception.exceptions.MemberException;
 
 import java.util.regex.Pattern;
 

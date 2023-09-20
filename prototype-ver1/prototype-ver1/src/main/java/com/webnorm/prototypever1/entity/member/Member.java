@@ -1,8 +1,6 @@
 package com.webnorm.prototypever1.entity.member;
 
 import com.mongodb.lang.NonNull;
-import com.webnorm.prototypever1.exception.Exceptions.BusinessLogicException;
-import com.webnorm.prototypever1.exception.Exceptions.MemberException;
 import com.webnorm.prototypever1.security.oauth.SocialType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -16,7 +14,6 @@ import org.springframework.util.Assert;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Document(collection = "members")

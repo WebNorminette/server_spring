@@ -6,10 +6,9 @@ import com.webnorm.prototypever1.api.response.MemberListResponse;
 import com.webnorm.prototypever1.api.response.MultiResponse;
 import com.webnorm.prototypever1.api.response.SingleResponse;
 import com.webnorm.prototypever1.entity.member.Member;
-import com.webnorm.prototypever1.exception.Exceptions.MemberException;
 import com.webnorm.prototypever1.security.redis.RedisTokenInfo;
-import com.webnorm.prototypever1.exception.Exceptions.AuthException;
-import com.webnorm.prototypever1.exception.Exceptions.BusinessLogicException;
+import com.webnorm.prototypever1.exception.exceptions.AuthException;
+import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
 import com.webnorm.prototypever1.security.oauth.SocialType;
 import com.webnorm.prototypever1.service.MemberService;
 import com.webnorm.prototypever1.security.TokenInfo;
@@ -22,7 +21,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @RestController
