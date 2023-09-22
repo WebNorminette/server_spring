@@ -1,11 +1,13 @@
 package com.webnorm.prototypever1.service;
 
 import com.webnorm.prototypever1.entity.member.Member;
+import com.webnorm.prototypever1.entity.member.MemberAdapter;
 import com.webnorm.prototypever1.security.oauth.CustomOAuth2User;
 import com.webnorm.prototypever1.security.oauth.OAuthAttributes;
 import com.webnorm.prototypever1.repository.MemberRepository;
 import com.webnorm.prototypever1.security.oauth.SocialType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -39,14 +41,14 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuthAttributes attributes = OAuthAttributes.of(socialType, userNameAttributeName, oAuth2User.getAttributes());
 
         // Member 생성 후 db에 저장 또는 업데이트
-        Member member = saveOrUpdate(attributes, socialType);
+        User user = saveOrUpdate(attributes, socialType);
 
         // Member 로 OAuth2User 생성해서 리턴
         return new CustomOAuth2User(
-                member.getAuthorities(),
+                user.getAuthorities(),
                 attributes.getAttributes(),
                 attributes.getNameAttributeKey(),
-                member.getEmail()
+                user.getUsername()
         );
     }
 
@@ -62,10 +64,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
     // email 과 socialType 으로 Member 조회해서 존재하는 경우 그냥 리턴, 없는 경우 생성해서 리턴
-    private Member saveOrUpdate(OAuthAttributes attributes, SocialType socialType) {
+    private User saveOrUpdate(OAuthAttributes attributes, SocialType socialType) {
         Optional<Member> findMember = memberRepository
                 .findByEmailAndSocialType(attributes.getEmail(), socialType);
-        if (findMember.isPresent()) return findMember.get();
-        else return memberRepository.save(attributes.toEntity(socialType));
+        if (findMember.isPresent()) return new MemberAdapter(findMember.get());
+        else return new MemberAdapter(memberRepository.save(attributes.toEntity(socialType)));
     }
 }

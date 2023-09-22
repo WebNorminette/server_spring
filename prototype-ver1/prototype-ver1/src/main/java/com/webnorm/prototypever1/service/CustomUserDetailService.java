@@ -1,6 +1,7 @@
 package com.webnorm.prototypever1.service;
 
 import com.webnorm.prototypever1.entity.member.Member;
+import com.webnorm.prototypever1.entity.member.MemberAdapter;
 import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
 import com.webnorm.prototypever1.exception.exceptions.MemberException;
 import com.webnorm.prototypever1.repository.MemberRepository;
@@ -27,17 +28,7 @@ public class CustomUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Member> optionalMember = memberRepository.findByEmailAndSocialType(username, SocialType.ORIGIN);
         Member findMember = optionalMember.orElseThrow(() -> new BusinessLogicException(MemberException.USER_NOT_FOUND));
-        UserDetails userDetails = createUserDetails(findMember);
-        log.info(userDetails.getUsername() + " " + userDetails.getPassword() + " " + userDetails.getAuthorities());
-        return userDetails;
-    }
-
-    // userDetail 객체 생성해주는 메서드 -> 해당하는 사용자의 데이터가 존재하면 userDetails 객체로 만들어 리턴
-    public UserDetails createUserDetails(Member member) {
-        return User.builder()
-                .username(member.getUsername())
-                .password(member.getPassword())
-                .roles(member.getRoles().toArray(new String[0]))
-                .build();
+        log.info("user : " + findMember.getName() + " login success!");
+        return new MemberAdapter(findMember);
     }
 }

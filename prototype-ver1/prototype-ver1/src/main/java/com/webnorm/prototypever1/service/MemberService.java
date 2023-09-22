@@ -1,5 +1,6 @@
 package com.webnorm.prototypever1.service;
 
+import com.webnorm.prototypever1.api.request.MemberUpdateRequest;
 import com.webnorm.prototypever1.entity.member.Member;
 import com.webnorm.prototypever1.security.redis.RedisTokenInfo;
 import com.webnorm.prototypever1.exception.exceptions.AuthException;
@@ -9,6 +10,8 @@ import com.webnorm.prototypever1.repository.MemberRepository;
 import com.webnorm.prototypever1.repository.RedisTokenInfoRepository;
 import com.webnorm.prototypever1.security.provider.JwtTokenProvider;
 import com.webnorm.prototypever1.security.TokenInfo;
+import com.webnorm.prototypever1.util.DataPattern;
+import com.webnorm.prototypever1.util.DataPatternMatcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,7 +44,7 @@ public class MemberService {
         member.encodePassword(passwordEncoder);
         Optional<Member> findMember = memberRepository.findByEmailAndSocialType(member.getEmail(), member.getSocialType());
         if(findMember.isPresent())
-            throw new BusinessLogicException(MemberException.USER_EXIST);
+            throw new BusinessLogicException(MemberException.EMAIL_DUP);
         return memberRepository.save(member);
     }
 
@@ -105,5 +108,27 @@ public class MemberService {
             return tokenInfo;
         } else
             throw new BusinessLogicException(AuthException.TOKEN_NOT_FOUND);
+    }
+
+    /*
+     * [회원정보 수정]
+     */
+    public Member updateMember(Member member, MemberUpdateRequest request) {
+        // 형식 체크
+        DataPatternMatcher.doesMatch(request.getName(), DataPattern.NAME);
+        DataPatternMatcher.doesMatch(request.getEmail(), DataPattern.EMAIL);
+
+        // email 중복체크 (email 변경 요청시에만 -> 기존 email 과 상이한 경우)
+        if (!member.compWithOriginEmail(request.getEmail())) {
+            log.info("이메일 상이! -> 중복검사");
+            if (memberRepository.findByEmail(member.getEmail()).isPresent())
+                throw new BusinessLogicException(MemberException.EMAIL_DUP);
+        }
+
+        Member updatedMember = member.update(       // 수정할 Member 객체 생성
+                request.getName(),
+                request.getEmail()
+        );
+        return memberRepository.save(member);
     }
 }

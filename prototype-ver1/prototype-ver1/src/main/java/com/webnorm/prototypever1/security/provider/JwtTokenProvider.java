@@ -2,10 +2,12 @@ package com.webnorm.prototypever1.security.provider;
 
 import com.webnorm.prototypever1.exception.exceptions.AuthException;
 import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
+import com.webnorm.prototypever1.service.CustomUserDetailService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,6 +28,9 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
     private final Key key;
     private final long HOUR = 60 * 60 * 1000;
+
+    @Autowired
+    private CustomUserDetailService customUserDetailService;
 
     // 생성자로 secretKey 디코딩 -> 바이트 배열(keyBytes)
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
@@ -64,12 +69,8 @@ public class JwtTokenProvider {
         if (claims.get("auth") == null) {           // 권한 정보 없는 토큰 예외처리
             throw new BusinessLogicException(AuthException.NO_AUTH_IN_TOKEN);
         }
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get("auth").toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());      // 클레임에서 권한 정보 리스트로 받아오기
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        UserDetails userDetails = customUserDetailService.loadUserByUsername(claims.getSubject());
+        return new UsernamePasswordAuthenticationToken(userDetails, " ", userDetails.getAuthorities());
     }
 
     // jwt 파싱해서 claim 생성하는 메소드

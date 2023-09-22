@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum MemberException implements ExceptionCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User Not Found"),
-    USER_EXIST(HttpStatus.CONFLICT, "User is already Exist!"),
+    EMAIL_DUP(HttpStatus.CONFLICT, "Email Duplicated!"),
     MAILKEY_MISMATCH(HttpStatus.CONFLICT, "Incorrect password."),
     INCORRECT_PASSWORD(HttpStatus.CONFLICT, "Password"),
     NOT_ACTIVE_USER(HttpStatus.FORBIDDEN, "This User Is Not Active"),

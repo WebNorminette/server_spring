@@ -2,10 +2,13 @@ package com.webnorm.prototypever1.controller;
 
 import com.webnorm.prototypever1.api.request.MemberLoginRequest;
 import com.webnorm.prototypever1.api.request.MemberSignupRequest;
+import com.webnorm.prototypever1.api.request.MemberUpdateRequest;
 import com.webnorm.prototypever1.api.response.MemberListResponse;
 import com.webnorm.prototypever1.api.response.MultiResponse;
 import com.webnorm.prototypever1.api.response.SingleResponse;
 import com.webnorm.prototypever1.entity.member.Member;
+import com.webnorm.prototypever1.entity.member.MemberAdapter;
+import com.webnorm.prototypever1.exception.exceptions.MemberException;
 import com.webnorm.prototypever1.security.redis.RedisTokenInfo;
 import com.webnorm.prototypever1.exception.exceptions.AuthException;
 import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
@@ -13,14 +16,20 @@ import com.webnorm.prototypever1.security.oauth.SocialType;
 import com.webnorm.prototypever1.service.MemberService;
 import com.webnorm.prototypever1.security.TokenInfo;
 import com.webnorm.prototypever1.service.RedisTokenInfoService;
+import com.webnorm.prototypever1.util.DataPattern;
 import com.webnorm.prototypever1.util.DataPatternMatcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,9 +44,9 @@ public class MemberController {
     // 회원가입 : request(dto)를 member 엔티티에 매핑, 메일 발송
     @PostMapping
     public SingleResponse signup(@RequestBody MemberSignupRequest request) {
-        DataPatternMatcher.doesMatch(request.getEmail(), "email");
-        DataPatternMatcher.doesMatch(request.getName(), "name");
-        DataPatternMatcher.doesMatch(request.getPassword(), "password");
+        DataPatternMatcher.doesMatch(request.getEmail(), DataPattern.EMAIL);
+        DataPatternMatcher.doesMatch(request.getName(), DataPattern.NAME);
+        DataPatternMatcher.doesMatch(request.getPassword(), DataPattern.PASSWORD);
         Member member = Member.builder()
                 .name(request.getName())
                 .email(request.getEmail())
@@ -104,5 +113,17 @@ public class MemberController {
         // atk 로 rtk 조회 후 redis 에서 삭제
         redisTokenInfoService.removeRefreshTokenByAccessToken(resolvedAccessToken);
         return new SingleResponse(HttpStatus.OK, "logout success");
+    }
+
+    // 회원정보 수정 (email, name만 수정 가능)
+    @PutMapping("/update")
+    public SingleResponse update(@AuthenticationPrincipal MemberAdapter memberAdapter,
+                                 @RequestBody MemberUpdateRequest request) {
+        // 현재 로그인한 사용자 불러오기
+        Member member = memberAdapter.getMember();
+
+        // update
+        Member updatedMember = memberService.updateMember(member, request);
+        return new SingleResponse(HttpStatus.OK, "successfully updated member " + member.getId(), updatedMember);
     }
 }
