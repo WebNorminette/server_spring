@@ -120,7 +120,7 @@ public class MemberService {
 
         // email 중복체크 (email 변경 요청시에만 -> 기존 email 과 상이한 경우)
         if (!member.compWithOriginEmail(request.getEmail())) {
-            log.info("이메일 상이! -> 중복검사");
+            //log.info("이메일 상이! -> 중복검ㅅㅏ");
             if (memberRepository.findByEmail(member.getEmail()).isPresent())
                 throw new BusinessLogicException(MemberException.EMAIL_DUP);
         }
@@ -130,5 +130,17 @@ public class MemberService {
                 request.getEmail()
         );
         return memberRepository.save(member);
+    }
+
+    /*
+     * [회원 삭제/탈퇴]
+     */
+    public Member deleteMember(String memberId) {
+        // id 로 회원 조회
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessLogicException(MemberException.USER_NOT_FOUND));
+
+        memberRepository.delete(member);
+        return member;
     }
 }

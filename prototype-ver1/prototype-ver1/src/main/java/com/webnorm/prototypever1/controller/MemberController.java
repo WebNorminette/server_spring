@@ -65,6 +65,7 @@ public class MemberController {
         List<Member> findMembers = memberService.findAllMember();
         List<MemberListResponse> memberList = findMembers.stream()
                 .map(m -> MemberListResponse.builder()
+                        .id(m.getId())
                         .email(m.getEmail())
                         .name(m.getName())
                         .socialType(m.getSocialType())
@@ -121,9 +122,16 @@ public class MemberController {
                                  @RequestBody MemberUpdateRequest request) {
         // 현재 로그인한 사용자 불러오기
         Member member = memberAdapter.getMember();
-
         // update
         Member updatedMember = memberService.updateMember(member, request);
-        return new SingleResponse(HttpStatus.OK, "successfully updated member " + member.getId(), updatedMember);
+        return new SingleResponse(HttpStatus.OK, "successfully updated member " + updatedMember.getId(), updatedMember);
+    }
+
+    // 회원 탈퇴
+    @DeleteMapping("/{memberId}")
+    public SingleResponse deleteForAdmin(@PathVariable("memberId") String memberId) {
+        // id 로 사용자 삭제
+        Member deletedMember = memberService.deleteMember(memberId);
+        return new SingleResponse(HttpStatus.OK, "successfully deleted member " + deletedMember.getId());
     }
 }
