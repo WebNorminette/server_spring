@@ -1,8 +1,6 @@
 package com.webnorm.prototypever1.entity.member;
 
 import com.mongodb.lang.NonNull;
-import com.webnorm.prototypever1.exception.Exceptions.BusinessLogicException;
-import com.webnorm.prototypever1.exception.Exceptions.MemberException;
 import com.webnorm.prototypever1.security.oauth.SocialType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -16,13 +14,13 @@ import org.springframework.util.Assert;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.regex.Pattern;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Document(collection = "members")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member implements UserDetails {
+public class Member {
    @Id
    private String id;
    @NonNull
@@ -37,8 +35,9 @@ public class Member implements UserDetails {
    @NonNull
    private List<String> roles = new ArrayList<>();
 
+   private String phoneNumber;
+
    // 이하는 현재 미사용중인 필드
-//   private String phoneNumber;
 //   private String gender;
 //   private Msc marketingMessageConsent;
 //   private Address address;
@@ -64,41 +63,17 @@ public class Member implements UserDetails {
         this.password = passwordEncoder.encode(password);
     }
 
-//   Spring Security 인증용 UserDetails 관련 메서드 implement
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role))
-                .collect(Collectors.toList());
+    // Member update 메서드
+    public Member update(String name, String email) {
+       if (name != null)    this.name = name;
+       if (email != null)   this.email = email;
+
+       return this;
     }
 
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
+    public boolean compWithOriginEmail(String newEmail) {
+       if (newEmail.equals(this.email)) return true;
+       else return false;
     }
 }
 
