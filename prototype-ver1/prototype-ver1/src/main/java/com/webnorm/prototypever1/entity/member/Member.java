@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
 
 @Document(collection = "members")
 @Getter
-@AllArgsConstructor
-@Builder
 public class Member {
    @Id
    private String id;
@@ -34,13 +32,23 @@ public class Member {
    @NonNull
    private List<String> roles = new ArrayList<>();
 
-   private String phoneNumber;
 
 /*   // 이하는 현재 미사용중인 필드
    private String gender;
    private Msc marketingMessageConsent;
    private Address address;
+   private String phoneNumber;
    private int  point;*/
+
+    @Builder
+    public Member(@NonNull String email, @NonNull String password,
+                  @NonNull String name, @NonNull SocialType socialType) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.socialType = socialType;
+        this.roles.add("USER");
+    }
 
     public MemberListResponse toMemberListResponse() {
         return MemberListResponse.builder()

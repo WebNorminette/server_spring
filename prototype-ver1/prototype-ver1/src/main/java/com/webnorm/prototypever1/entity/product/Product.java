@@ -25,7 +25,7 @@ public class Product {
     private String details;
     private Category category;
     private String shipping;
-    private Image image;
+    private List<Image> imageList;
 
     public void specifyCategory(Category category) {
         this.category = category;

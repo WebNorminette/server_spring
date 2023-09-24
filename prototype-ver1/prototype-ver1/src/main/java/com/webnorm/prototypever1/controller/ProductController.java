@@ -1,6 +1,6 @@
 package com.webnorm.prototypever1.controller;
 
-import com.webnorm.prototypever1.dto.request.product.AddFileRequest;
+import com.webnorm.prototypever1.dto.request.product.AddProductImgRequest;
 import com.webnorm.prototypever1.dto.request.product.AddProductRequest;
 import com.webnorm.prototypever1.dto.response.MultiResponse;
 import com.webnorm.prototypever1.dto.response.SingleResponse;
@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URL;
@@ -61,12 +62,12 @@ public class ProductController {
         return new MultiResponse(HttpStatus.OK, "successfully found Products by category " + category, products);
     }
 
-    // 파일 업로드
-    @PostMapping("/file")
-    public SingleResponse uploadFile(@ModelAttribute AddFileRequest request) throws IOException {
-        String url = s3Service.saveFile(request.getFile());
-        //log.info(url);
-        return new SingleResponse(HttpStatus.OK, "ok", url);
+    // 사진파일 업로드
+    @PostMapping("/img")
+    public SingleResponse addProductImg(@ModelAttribute AddProductImgRequest request) {
+        //String url = s3Service.saveFile(request);
+        log.info(request.getProductId());
+        return new SingleResponse(HttpStatus.OK, "ok");
     }
 
     // 파일 다운로드

@@ -27,4 +27,5 @@ public class MemberSignupRequest implements RequestInterface {
                 .socialType(SocialType.ORIGIN)
                 .build();
     }
+
 }

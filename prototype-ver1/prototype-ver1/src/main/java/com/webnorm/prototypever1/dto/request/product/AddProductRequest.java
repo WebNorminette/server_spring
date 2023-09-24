@@ -4,12 +4,17 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.webnorm.prototypever1.dto.request.RequestInterface;
 import com.webnorm.prototypever1.entity.product.Product;
 import com.webnorm.prototypever1.entity.product.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.io.Serializable;
 import java.util.List;
 
-@Data
+@AllArgsConstructor
+@Getter
+@Builder
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class AddProductRequest implements RequestInterface {
     private String name;

@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,6 +26,7 @@ public class S3Service {
      * [파일 저장 메서드]
      */
     public String saveFile(MultipartFile multipartFile) {
+
         // 원본 파일명 가져오기
         String originalFilename = multipartFile.getOriginalFilename();
         // 저장할 파일명 만들기(uuid 사용)
