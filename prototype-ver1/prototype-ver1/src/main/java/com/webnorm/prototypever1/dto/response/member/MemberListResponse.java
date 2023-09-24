@@ -5,8 +5,7 @@ import com.webnorm.prototypever1.security.oauth.SocialType;
 import lombok.*;
 
 
-@AllArgsConstructor
-@Getter
+@Data
 @Builder
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class MemberListResponse {

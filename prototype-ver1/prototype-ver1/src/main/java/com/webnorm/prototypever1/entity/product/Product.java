@@ -2,12 +2,9 @@ package com.webnorm.prototypever1.entity.product;
 
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.webnorm.prototypever1.entity.category.Category;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -23,11 +20,17 @@ public class Product {
     private String color;
     private List<Size> sizeList;
     private String details;
-    private Category category;
+    private Collection collection;
     private String shipping;
     private List<Image> imageList;
 
-    public void specifyCategory(Category category) {
-        this.category = category;
+    public Product mapCategory(Collection collection) {
+        this.collection = collection;
+        return this;
+    }
+
+    public Product mapImageList(List<Image> imageList) {
+        this.imageList = imageList;
+        return this;
     }
 }

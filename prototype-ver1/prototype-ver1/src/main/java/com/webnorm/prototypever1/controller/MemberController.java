@@ -43,7 +43,7 @@ public class MemberController {
         // dto -> entity 전환
         Member member = request.toEntity();
         // service로 넘김
-        memberService.createMember(member);
+        memberService.saveMember(member);
         // 가입 확인용 email 전송
         emailController.sendWelcomeEmail(member.getEmail(), member.getName());
         return new SingleResponse(HttpStatus.OK, "signup success");

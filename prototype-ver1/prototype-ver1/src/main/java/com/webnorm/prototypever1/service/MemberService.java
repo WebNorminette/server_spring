@@ -40,7 +40,7 @@ public class MemberService {
     * # 비밀번호 인코딩
     * # 이메일 전송
     */
-    public Member createMember(Member member) {
+    public Member saveMember(Member member) {
         member.encodePassword(passwordEncoder);
         Optional<Member> findMember = memberRepository.findByEmailAndSocialType(member.getEmail(), member.getSocialType());
         if(findMember.isPresent())

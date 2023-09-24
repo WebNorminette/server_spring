@@ -1,18 +1,15 @@
 package com.webnorm.prototypever1.dto.request.product;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.Serializable;
 import java.util.List;
 
-@AllArgsConstructor
-@Getter
-@Builder
+@Data
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class AddProductImgRequest {
+public class ProductImgAddRequest implements Serializable {
     private String productId;
     private List<MultipartFile> multipartFileList;
 }

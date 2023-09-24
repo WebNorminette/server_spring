@@ -7,9 +7,7 @@ import com.webnorm.prototypever1.entity.member.Member;
 import com.webnorm.prototypever1.security.oauth.SocialType;
 import lombok.*;
 
-@AllArgsConstructor
-@Getter
-@Builder
+@Data
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class MemberSignupRequest implements RequestInterface {
     @NonNull

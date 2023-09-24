@@ -1,5 +1,6 @@
 package com.webnorm.prototypever1.entity.product;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,8 +12,13 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class Image {
-    private String id;
     private String productId;
     private String originName;
     private String saveName;
+    private ObjectMetadata metadata;
+
+    public Image mapProductId(String productId) {
+        this.productId = productId;
+        return this;
+    }
 }

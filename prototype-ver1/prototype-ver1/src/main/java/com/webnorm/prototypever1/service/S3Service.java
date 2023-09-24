@@ -2,6 +2,7 @@ package com.webnorm.prototypever1.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.webnorm.prototypever1.entity.product.Image;
 import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
 import com.webnorm.prototypever1.exception.exceptions.ProductException;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class S3Service {
     /*
      * [파일 저장 메서드]
      */
-    public String saveFile(MultipartFile multipartFile) {
+    public Image saveFile(MultipartFile multipartFile) {
 
         // 원본 파일명 가져오기
         String originalFilename = multipartFile.getOriginalFilename();
@@ -43,7 +44,14 @@ public class S3Service {
         } catch (IOException e) {
             throw new BusinessLogicException(ProductException.FILE_INPUT_ERROR);
         }
-        return amazonS3.getUrl(bucket, saveFilename).toString();
+        // 저장한 파일 url 가져오기
+        String url = amazonS3.getUrl(bucket, saveFilename).toString();
+
+        return Image.builder()
+                .originName(originalFilename)
+                .saveName(saveFilename)
+                .metadata(metadata)
+                .build();
     }
 
     /*
