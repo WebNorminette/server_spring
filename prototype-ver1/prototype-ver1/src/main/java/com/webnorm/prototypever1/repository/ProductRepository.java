@@ -1,4 +1,4 @@
-package com.webnorm.prototypever1.repository;
+    package com.webnorm.prototypever1.repository;
 
 import com.webnorm.prototypever1.entity.product.Product;
 import org.springframework.data.mongodb.repository.MongoRepository;

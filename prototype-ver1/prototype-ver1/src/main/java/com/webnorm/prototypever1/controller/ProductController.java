@@ -1,5 +1,6 @@
 package com.webnorm.prototypever1.controller;
 
+import com.webnorm.prototypever1.api.request.AddFileRequest;
 import com.webnorm.prototypever1.api.request.AddProductRequest;
 import com.webnorm.prototypever1.api.response.MultiResponse;
 import com.webnorm.prototypever1.api.response.SingleResponse;
@@ -7,12 +8,19 @@ import com.webnorm.prototypever1.entity.category.Category;
 import com.webnorm.prototypever1.entity.product.Product;
 import com.webnorm.prototypever1.service.CategoryService;
 import com.webnorm.prototypever1.service.ProductService;
+import com.webnorm.prototypever1.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 @RestController
 @Slf4j
@@ -21,14 +29,16 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
     private final CategoryService categoryService;
+    private final S3Service s3Service;
 
     // 상품 추가
     @PostMapping
     public SingleResponse addProduct(@RequestBody AddProductRequest request) {
+
         Product product = Product.builder()
                 .name(request.getName())
                 .price(request.getPrice())
-                .colors(request.getColorList())
+                .sizeList(request.getSizeList())
                 .details(request.getDetails())
                 .shipping(request.getShipping())
                 .build();
@@ -37,7 +47,7 @@ public class ProductController {
             product.specifyCategory(category);
         }
         Product newProduct = productService.createProduct(product);     // db 저장
-        return new SingleResponse(HttpStatus.OK, "successfully added Product", newProduct);
+        return new SingleResponse(HttpStatus.OK, "successfully added Product");
     }
 
     // 상품 전체조회
@@ -59,5 +69,20 @@ public class ProductController {
     public MultiResponse searchProductByCategory(@PathVariable("category") String category) {
         List<Product> products = productService.findByCategory(category);
         return new MultiResponse(HttpStatus.OK, "successfully found Products by category " + category, products);
+    }
+
+    // 파일 업로드
+    @PostMapping("/file")
+    public SingleResponse uploadFile(@ModelAttribute AddFileRequest request) throws IOException {
+        String url = s3Service.saveFile(request.getFile());
+        //log.info(url);
+        return new SingleResponse(HttpStatus.OK, "ok", url);
+    }
+
+    // 파일 다운로드
+    @GetMapping("/file/{filename}")
+    public SingleResponse downloadFile(@PathVariable("filename") String filename) {
+        URL url = s3Service.findFile(filename);
+        return new SingleResponse(HttpStatus.OK, "ok", url);
     }
 }

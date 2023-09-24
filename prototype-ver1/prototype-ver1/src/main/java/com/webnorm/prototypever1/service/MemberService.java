@@ -113,7 +113,11 @@ public class MemberService {
     /*
      * [회원정보 수정]
      */
-    public Member updateMember(Member member, MemberUpdateRequest request) {
+    public Member updateMember(String memberId, MemberUpdateRequest request) {
+        // 사용자 id로 불러오기
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessLogicException(MemberException.USER_NOT_FOUND));
+
         // 형식 체크
         DataPatternMatcher.doesMatch(request.getName(), DataPattern.NAME);
         DataPatternMatcher.doesMatch(request.getEmail(), DataPattern.EMAIL);

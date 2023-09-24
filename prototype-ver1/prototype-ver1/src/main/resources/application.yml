@@ -65,3 +65,17 @@ spring:
 # jwt 설정
 jwt:
   secret: ${JWT_SECRET}
+
+# aws d3 설정
+cloud:
+  aws:
+    s3:
+      bucket: webnorm-test-bucket
+    credentials:
+      access-key: AKIA4CFYP3MR4G37OD4B
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false

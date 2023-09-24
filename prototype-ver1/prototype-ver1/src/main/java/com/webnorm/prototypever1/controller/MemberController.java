@@ -117,13 +117,11 @@ public class MemberController {
     }
 
     // 회원정보 수정 (email, name만 수정 가능)
-    @PutMapping("/update")
-    public SingleResponse update(@AuthenticationPrincipal MemberAdapter memberAdapter,
-                                 @RequestBody MemberUpdateRequest request) {
-        // 현재 로그인한 사용자 불러오기
-        Member member = memberAdapter.getMember();
+    @PutMapping("/{memberId}")
+    public SingleResponse update(@PathVariable("memberId") String memberId,
+            @RequestBody MemberUpdateRequest request) {
         // update
-        Member updatedMember = memberService.updateMember(member, request);
+        Member updatedMember = memberService.updateMember(memberId, request);
         return new SingleResponse(HttpStatus.OK, "successfully updated member " + updatedMember.getId(), updatedMember);
     }
 

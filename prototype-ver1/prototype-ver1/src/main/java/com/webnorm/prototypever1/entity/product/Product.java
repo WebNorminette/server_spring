@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Document
@@ -20,19 +21,25 @@ public class Product {
 
     private String name;
     private int price;
-    private List<Color> colors;
+    private String color;
+    private List<Size> sizeList;
     private String details;
     private Category category;
     private String shipping;
+    private Image image;
 
     @Builder
-    public Product(String name, int price, List<Color> colors,
-                   String details, String shipping) {
+    public Product(String name, int price, String color,
+                   List<Size> sizeList, String details, Category category,
+                   String shipping, Image image) {
         this.name = name;
         this.price = price;
-        this.colors = colors;
+        this.color = color;
+        this.sizeList = sizeList;
         this.details = details;
+        this.category = category;
         this.shipping = shipping;
+        this.image = image;
     }
 
     public void specifyCategory(Category category) {

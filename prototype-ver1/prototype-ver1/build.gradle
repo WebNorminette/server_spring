@@ -37,8 +37,10 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	// google OAuth2
+	// OAuth2
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	// aws s3
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 tasks.named('test') {
