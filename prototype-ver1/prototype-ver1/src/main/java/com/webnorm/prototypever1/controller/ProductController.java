@@ -30,25 +30,19 @@ public class ProductController {
     // 상품 추가
     @PostMapping
     public SingleResponse addProduct(@RequestBody AddProductRequest request) {
-
-        Product product = Product.builder()
-                .name(request.getName())
-                .price(request.getPrice())
-                .sizeList(request.getSizeList())
-                .details(request.getDetails())
-                .shipping(request.getShipping())
-                .build();
+        // dto -> entity 전환
+        Product product = request.toEntity();
         if (request.getCategory() != null) {  // 카테고리 설정 : 카테고리가 존재하는 경우에만 설정
             Category category = categoryService.findByName(request.getCategory());
             product.specifyCategory(category);
         }
         Product newProduct = productService.createProduct(product);     // db 저장
-        return new SingleResponse(HttpStatus.OK, "successfully added Product");
+        return new SingleResponse(HttpStatus.OK, "successfully added Product " + newProduct.getName());
     }
 
     // 상품 전체조회
     @GetMapping
-    public MultiResponse serchAllProducts() {
+    public MultiResponse searchAllProducts() {
         List<Product> allProducts = productService.findAll();
         return new MultiResponse(HttpStatus.OK, "successfully found all Products", allProducts);
     }
