@@ -1,9 +1,9 @@
 package com.webnorm.prototypever1.controller;
 
-import com.webnorm.prototypever1.api.request.AddFileRequest;
-import com.webnorm.prototypever1.api.request.AddProductRequest;
-import com.webnorm.prototypever1.api.response.MultiResponse;
-import com.webnorm.prototypever1.api.response.SingleResponse;
+import com.webnorm.prototypever1.dto.request.product.AddFileRequest;
+import com.webnorm.prototypever1.dto.request.product.AddProductRequest;
+import com.webnorm.prototypever1.dto.response.MultiResponse;
+import com.webnorm.prototypever1.dto.response.SingleResponse;
 import com.webnorm.prototypever1.entity.category.Category;
 import com.webnorm.prototypever1.entity.product.Product;
 import com.webnorm.prototypever1.service.CategoryService;
@@ -11,16 +11,12 @@ import com.webnorm.prototypever1.service.ProductService;
 import com.webnorm.prototypever1.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Stream;
 
 @RestController
 @Slf4j

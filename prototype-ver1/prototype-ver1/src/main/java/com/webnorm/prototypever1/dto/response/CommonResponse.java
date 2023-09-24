@@ -1,7 +1,5 @@
-package com.webnorm.prototypever1.api.response;
+package com.webnorm.prototypever1.dto.response;
 
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

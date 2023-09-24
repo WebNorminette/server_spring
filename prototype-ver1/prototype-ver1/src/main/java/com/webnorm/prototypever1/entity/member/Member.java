@@ -1,6 +1,7 @@
 package com.webnorm.prototypever1.entity.member;
 
 import com.mongodb.lang.NonNull;
+import com.webnorm.prototypever1.dto.response.member.MemberListResponse;
 import com.webnorm.prototypever1.security.oauth.SocialType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -11,15 +12,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Document(collection = "members")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Member {
    @Id
    private String id;
@@ -37,26 +36,20 @@ public class Member {
 
    private String phoneNumber;
 
-   // 이하는 현재 미사용중인 필드
-//   private String gender;
-//   private Msc marketingMessageConsent;
-//   private Address address;
-//   private int  point;
+/*   // 이하는 현재 미사용중인 필드
+   private String gender;
+   private Msc marketingMessageConsent;
+   private Address address;
+   private int  point;*/
 
-   @Builder
-   public Member(String email, String password, String name, SocialType socialType) {
-       Assert.hasText(email, "email cannot be empty");
-       Assert.hasText(name, "name cannot be empty");
-       Assert.notNull(socialType, "socialType cannot be empty");
-       //Assert.hasText(password, "password cannot be empty");
-
-
-       this.email = email;
-       this.name = name;
-       this.password = password;
-       this.socialType = socialType;
-       this.roles.add("USER");
-   }
+    public MemberListResponse toMemberListResponse() {
+        return MemberListResponse.builder()
+                .id(id)
+                .email(email)
+                .name(name)
+                .socialType(socialType)
+                .build();
+    }
 
     // 비밀번호 encoding 메서드
     public void encodePassword(PasswordEncoder passwordEncoder) {
@@ -67,7 +60,6 @@ public class Member {
     public Member update(String name, String email) {
        if (name != null)    this.name = name;
        if (email != null)   this.email = email;
-
        return this;
     }
 

@@ -1,6 +1,6 @@
 package com.webnorm.prototypever1.service;
 
-import com.webnorm.prototypever1.api.request.MemberUpdateRequest;
+import com.webnorm.prototypever1.dto.request.member.MemberUpdateRequest;
 import com.webnorm.prototypever1.entity.member.Member;
 import com.webnorm.prototypever1.security.redis.RedisTokenInfo;
 import com.webnorm.prototypever1.exception.exceptions.AuthException;

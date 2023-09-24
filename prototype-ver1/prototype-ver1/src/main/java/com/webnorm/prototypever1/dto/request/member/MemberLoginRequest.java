@@ -1,9 +1,13 @@
-package com.webnorm.prototypever1.api.request;
+package com.webnorm.prototypever1.dto.request.member;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
-@Data
+@AllArgsConstructor
+@Getter
+@Builder
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class MemberLoginRequest {
     private String email;

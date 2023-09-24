@@ -1,12 +1,10 @@
 package com.webnorm.prototypever1.controller;
 
-import com.webnorm.prototypever1.api.response.SingleResponse;
+import com.webnorm.prototypever1.dto.response.SingleResponse;
 import com.webnorm.prototypever1.service.EmailService;
 import com.webnorm.prototypever1.util.EmailMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

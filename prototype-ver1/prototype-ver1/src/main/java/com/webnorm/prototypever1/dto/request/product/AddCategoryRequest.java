@@ -1,4 +1,4 @@
-package com.webnorm.prototypever1.api.request;
+package com.webnorm.prototypever1.dto.request.product;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Data;
