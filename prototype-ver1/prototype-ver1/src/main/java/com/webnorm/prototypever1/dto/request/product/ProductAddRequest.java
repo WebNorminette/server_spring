@@ -12,15 +12,16 @@ import java.util.List;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ProductAddRequest implements RequestInterface {
     private String name;
+    private String color;
     private int price;
     private List<Size> sizeList;
     private String details;
-    private String collection;
     private String shipping;
 
     public Product toEntity() {
         return Product.builder()
                 .name(name)
+                .color(color)
                 .price(price)
                 .sizeList(sizeList)
                 .details(details)

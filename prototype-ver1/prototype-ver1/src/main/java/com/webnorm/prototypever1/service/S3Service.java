@@ -51,6 +51,7 @@ public class S3Service {
                 .originName(originalFilename)
                 .saveName(saveFilename)
                 .metadata(metadata)
+                .url(url)
                 .build();
     }
 

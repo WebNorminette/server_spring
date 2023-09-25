@@ -24,12 +24,12 @@ public class ProductService {
 
     /*
     * [상품 저장]
-    * # 상품명 중복검사
+    * # 상품명 중복검사 <- XXX 안함
     */
     public Product saveProduct(Product product) {
-        Optional<Product> findProduct = productRepository.findByName(product.getName());
+        /*Optional<Product> findProduct = productRepository.findByName(product.getName());
         if (findProduct.isPresent())
-            throw new BusinessLogicException(ProductException.PRODUCT_NAME_DUP);
+            throw new BusinessLogicException(ProductException.PRODUCT_NAME_DUP);*/
         return productRepository.save(product);
     }
 

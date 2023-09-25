@@ -21,27 +21,29 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/products")
 public class ProductController {
     private final ProductService productService;
     private final CollectionService categoryService;
     private final S3Service s3Service;
 
     // 상품 추가
-    @PostMapping("/{collection}/products")
-    public SingleResponse addProduct(@RequestBody ProductAddRequest request) {
+    @PostMapping("/collections/{collectionName}/products")
+    public SingleResponse addProduct(
+            @PathVariable("collectionName") String collectionName,
+            @RequestBody ProductAddRequest request
+    ) {
         // dto -> entity 전환
         Product product = request.toEntity();
-        if (request.getCollection() != null) {  // 카테고리 설정 : 카테고리가 존재하는 경우에만 설정
-            Collection collection = categoryService.findByName(request.getCollection());
+        if (collectionName != null) {  // 카테고리 설정 : 카테고리가 존재하는 경우에만 설정
+            Collection collection = categoryService.findByName(collectionName);
             product.mapCategory(collection);
         }
         Product newProduct = productService.saveProduct(product);     // db 저장
         return new SingleResponse(HttpStatus.OK, "successfully added Product " + newProduct.getName());
     }
 
-    // collection(category) 전체조회
-    @GetMapping
+    // 전체 카테고리에 해당하는 상품 조회(ALL)
+    @GetMapping("/collections/all")
     public MultiResponse mainPageProducts() {
         List<Product> allProducts = productService.findAll();
         return new MultiResponse(HttpStatus.OK, "successfully found all Products", allProducts);
@@ -61,17 +63,18 @@ public class ProductController {
         return new MultiResponse(HttpStatus.OK, "successfully found Products by category " + category, products);
     }
 
-    // 사진파일 업로드
-    @PostMapping("/img")
+    // 사진파일 업로드 -> 상품에 사진 추가
+    @PostMapping("/collections/{collectionName}/products/img")
     public SingleResponse addProductImg(@ModelAttribute ProductImgAddRequest request) {
         // S3 에 사진 저장 후 Image 엔티티 생성
         List<Image> imageList = request.getMultipartFileList().stream()
                 .map(file -> s3Service.saveFile(file).mapProductId(request.getProductId())).toList();
         // id로 product 찾아서 imageList 저장
         Product product = productService.addImageToProduct(request.getProductId(), imageList);
-
+        // url 리스트 생성
+        List<String> urlList = imageList.stream().map(i -> i.getUrl()).toList();
         //log.info(request.getProductId());
-        return new SingleResponse(HttpStatus.OK, "ok", product);
+        return new SingleResponse(HttpStatus.OK, "ok", urlList);
     }
 
     //
