@@ -48,7 +48,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 user.getAuthorities(),
                 attributes.getAttributes(),
                 attributes.getNameAttributeKey(),
-                user.getUsername()
+                attributes.getEmail(),
+                socialType
         );
     }
 
@@ -63,11 +64,18 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         return SocialType.GOOGLE;
     }
 
-    // email 과 socialType 으로 Member 조회해서 존재하는 경우 그냥 리턴, 없는 경우 생성해서 리턴
+    // email 로 Member 조회해서 존재하는 경우 업데이트해서 리턴, 없는 경우 생성해서 리턴
     private User saveOrUpdate(OAuthAttributes attributes, SocialType socialType) {
         Optional<Member> findMember = memberRepository
                 .findByEmailAndSocialType(attributes.getEmail(), socialType);
-        if (findMember.isPresent()) return new MemberAdapter(findMember.get());
+        if (findMember.isPresent()){    // 존재하는 경우 update
+            Member member = findMember.get();
+            Member savedMember = memberRepository.save(
+                    member.update(member.getName(), member.getEmail())
+            );
+            return new MemberAdapter(savedMember);
+        }
+        // 존재하지 않는 경우 생성 후 save
         else return new MemberAdapter(memberRepository.save(attributes.toEntity(socialType)));
     }
 }

@@ -12,6 +12,7 @@ import com.webnorm.prototypever1.service.ProductService;
 import com.webnorm.prototypever1.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,12 +43,12 @@ public class ProductController {
         return new SingleResponse(HttpStatus.OK, "successfully added Product " + newProduct.getName());
     }
 
-    // 전체 카테고리에 해당하는 상품 조회(ALL)
-    @GetMapping("/collections/all")
+    // 모든 카테고리의 상품 조회(ALL)
+    /*@GetMapping("/collections/all")
     public MultiResponse mainPageProducts() {
-        List<Product> allProducts = productService.findAll();
-        return new MultiResponse(HttpStatus.OK, "successfully found all Products", allProducts);
-    }
+        *//*Page<Product> allProducts = productService.findAll();
+        return new MultiResponse(HttpStatus.OK, "successfully found all Products");*//*
+    }*/
 
     // 키워드로 상품 조회
     @GetMapping("/search")

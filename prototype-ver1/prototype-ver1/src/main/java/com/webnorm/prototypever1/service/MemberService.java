@@ -2,6 +2,7 @@ package com.webnorm.prototypever1.service;
 
 import com.webnorm.prototypever1.dto.request.member.MemberUpdateRequest;
 import com.webnorm.prototypever1.entity.member.Member;
+import com.webnorm.prototypever1.security.oauth.SocialType;
 import com.webnorm.prototypever1.security.redis.RedisTokenInfo;
 import com.webnorm.prototypever1.exception.exceptions.AuthException;
 import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
@@ -54,7 +55,7 @@ public class MemberService {
     }
 
     /*
-     * [로그인]
+     * [로그인] : 일반 로그인(ORIGIN)
      * */
     public TokenInfo login(String memberId, String password) {
         // login id, pw 값을 넣어 Authentication 객체 생성 (authenticated = false)
@@ -65,11 +66,12 @@ public class MemberService {
                 .getObject()
                 .authenticate(authenticationToken);
         // 인증 결과를 넣어 atk 생성
-        String accessToken = jwtTokenProvider.generateAccessToken(authentication);
+        String accessToken = jwtTokenProvider
+                .generateAccessToken(authentication, SocialType.ORIGIN, memberId);
         // rtk 생성
         String refreshToken = jwtTokenProvider.generateRefreshToken();
         // redis 에 rtk, atk, memberId 세트로 저장
-        redisTokenInfoRepository.save(
+        RedisTokenInfo savedRedisTokenInfo = redisTokenInfoRepository.save(
                 RedisTokenInfo.builder()
                         .id(memberId)
                         .refreshToken(refreshToken)
@@ -97,7 +99,8 @@ public class MemberService {
             // Authentication 객체 생성 (ATK 기반)
             Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
             // Authentication 객체 기반으로 새 ATK 생성
-            String newAccessToken = jwtTokenProvider.generateAccessToken(authentication);
+            String newAccessToken = jwtTokenProvider
+                    .regenerateAccessTokenByAccessToken(authentication, accessToken);
             // 새 RTK 생성
             String newRefreshToken = jwtTokenProvider.generateRefreshToken();
             TokenInfo tokenInfo = TokenInfo.builder()
@@ -133,7 +136,7 @@ public class MemberService {
                 request.getName(),
                 request.getEmail()
         );
-        return memberRepository.save(member);
+        return memberRepository.save(updatedMember);
     }
 
     /*

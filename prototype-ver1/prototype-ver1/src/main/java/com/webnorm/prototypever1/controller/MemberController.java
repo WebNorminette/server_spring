@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/members")
+@RequestMapping("/api/members")
 @Slf4j
 public class MemberController {
     private final MemberService memberService;
@@ -85,10 +85,10 @@ public class MemberController {
         TokenInfo tokenInfo = memberService.reissueToken(redisTokenInfo.getRefreshToken(),
                 redisTokenInfo.getAccessToken());
         // redis 에 RefreshToken 업데이트
-        redisTokenInfo.update(tokenInfo.getAccessToken(), tokenInfo.getRefreshToken());
-        redisTokenInfoService.saveTokenInfo(redisTokenInfo);
+        RedisTokenInfo updatedRedisTokenInfo = redisTokenInfo.update(tokenInfo.getAccessToken(), tokenInfo.getRefreshToken());
+        redisTokenInfoService.saveTokenInfo(updatedRedisTokenInfo);
         // tokenInfo Response
-        return new SingleResponse(HttpStatus.OK, "reissue success", tokenInfo);
+        return new SingleResponse(HttpStatus.OK, "reissue success", updatedRedisTokenInfo);
     }
 
     // 로그아웃
@@ -100,7 +100,7 @@ public class MemberController {
             resolvedAccessToken = accessToken.substring(7);    // "Bearer " 부분을 제거하여 실제 토큰값만 추출
         else throw new BusinessLogicException(AuthException.MALFORMED_TOKEN);
         // atk 로 rtk 조회 후 redis 에서 삭제
-        redisTokenInfoService.removeRefreshTokenByAccessToken(resolvedAccessToken);
+        redisTokenInfoService.removeByAccessToken(resolvedAccessToken);
         return new SingleResponse(HttpStatus.OK, "logout success");
     }
 
@@ -111,7 +111,7 @@ public class MemberController {
             @RequestBody MemberUpdateRequest request) {
         // id로 회원 조회 후 수정
         Member updatedMember = memberService.updateMember(memberId, request);
-        return new SingleResponse(HttpStatus.OK, "successfully updated member " + updatedMember.getId(), updatedMember);
+        return new SingleResponse(HttpStatus.OK, "successfully updated member " + updatedMember.getName());
     }
 
     // 회원 탈퇴

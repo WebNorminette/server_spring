@@ -56,7 +56,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/members", "members/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/members/reissue").permitAll()
                         .requestMatchers(HttpMethod.GET, "/collections/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/login").permitAll()
+                        .anyRequest().permitAll()
                 )
                 // filter, handler 설정
                 .exceptionHandling(exceptionHandling ->

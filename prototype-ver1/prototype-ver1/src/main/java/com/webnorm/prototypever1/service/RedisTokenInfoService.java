@@ -27,7 +27,7 @@ public class RedisTokenInfoService {
                 .orElseThrow(() -> new BusinessLogicException(AuthException.TOKEN_NOT_FOUND));
     }
 
-    public void removeRefreshTokenByAccessToken(String accessToken) {
+    public void removeByAccessToken(String accessToken) {
         RedisTokenInfo redisTokenInfo = redisTokenInfoRepository
                 .findByAccessToken(accessToken)
                 .orElseThrow(() -> new BusinessLogicException(AuthException.TOKEN_NOT_FOUND));

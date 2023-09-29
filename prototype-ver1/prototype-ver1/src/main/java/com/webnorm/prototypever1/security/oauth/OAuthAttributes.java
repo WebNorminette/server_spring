@@ -41,10 +41,11 @@ public class OAuthAttributes {
         // name 찾기
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
         String name = (String) response.get("name");
+        String email = (String) response.get("email");
         if (name.isEmpty()) throw new BusinessLogicException(AuthException.OAUTH_CANOOT_FIND_USERNAME);
         return OAuthAttributes.builder()
                 .name(name)
-                .email(UUID.randomUUID() + "@naverUser.com")
+                .email(email)
                 .attributes(attributes)
                 .nameAttributeKey(userNameAttributeName)
                 .build();
@@ -56,10 +57,11 @@ public class OAuthAttributes {
         Map<String, Object> response = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> profile = (Map<String, Object>) response.get("profile");
         String nickname = (String) profile.get("nickname");
+        String email = (String) response.get("email");
         if (nickname.isEmpty()) throw new BusinessLogicException(AuthException.OAUTH_CANOOT_FIND_USERNAME);
         return OAuthAttributes.builder()
                 .name(nickname)
-                .email(UUID.randomUUID() + "@kakaoUser.com")
+                .email(email)
                 .attributes(attributes)
                 .nameAttributeKey(userNameAttributeName)
                 .build();
@@ -79,6 +81,7 @@ public class OAuthAttributes {
         return Member.builder()
                 .email(email)
                 .name(name)
+                .password(UUID.randomUUID() + socialType.name())
                 .socialType(socialType)
                 .build();
     }
