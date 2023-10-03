@@ -28,15 +28,16 @@ public class Member {
    private String name;
    @NonNull
    private SocialType socialType;    // 소셜로그인 구분
-
    @NonNull
-   private List<String> roles = new ArrayList<>();
+   private List<String> roles = new ArrayList<>();  // 권한 리스트
+
+    private List<Address> addressList = new ArrayList<>();  // 주소 리스트
+    private Address defaultAddress;     // 기본 배송지
 
 
 /*   // 이하는 현재 미사용중인 필드
    private String gender;
    private Msc marketingMessageConsent;
-   private Address address;
    private String phoneNumber;
    private int  point;*/
 
@@ -69,6 +70,30 @@ public class Member {
        if (name != null)    this.name = name;
        if (email != null)   this.email = email;
        return this;
+    }
+
+    // 주소 추가 메서드
+    public Member addAddress(Address address) {
+        addressList.add(address);
+        return this;
+    }
+
+    // 주소 리스트 업데이트 메서드
+    public Member updateAddressList(List<Address> addressList) {
+        if (addressList != null) this.addressList = addressList;
+        return this;
+    }
+
+    // 기본 배송지 설정 메서드
+    public Member setDefaultAddress(Address address) {
+        this.defaultAddress = address;
+        return this;
+    }
+
+    // password update 메서드
+    public Member updatePassword(String password) {
+        if (password != null) this.password = password;
+        return this;
     }
 
     public boolean compWithOriginEmail(String newEmail) {

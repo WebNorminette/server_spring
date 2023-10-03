@@ -1,7 +1,11 @@
 package com.webnorm.prototypever1.service;
 
+import com.webnorm.prototypever1.dto.request.address.AddressAddRequest;
+import com.webnorm.prototypever1.dto.request.address.AddressUpdateRequest;
 import com.webnorm.prototypever1.dto.request.member.MemberUpdateRequest;
+import com.webnorm.prototypever1.entity.member.Address;
 import com.webnorm.prototypever1.entity.member.Member;
+import com.webnorm.prototypever1.exception.exceptions.AddressException;
 import com.webnorm.prototypever1.security.oauth.SocialType;
 import com.webnorm.prototypever1.security.redis.RedisTokenInfo;
 import com.webnorm.prototypever1.exception.exceptions.AuthException;
@@ -21,6 +25,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +49,7 @@ public class MemberService {
     */
     public Member saveMember(Member member) {
         member.encodePassword(passwordEncoder);
-        Optional<Member> findMember = memberRepository.findByEmailAndSocialType(member.getEmail(), member.getSocialType());
+        Optional<Member> findMember = memberRepository.findByEmail(member.getEmail());
         if(findMember.isPresent())
             throw new BusinessLogicException(MemberException.EMAIL_DUP);
         return memberRepository.save(member);
@@ -52,6 +58,11 @@ public class MemberService {
     // 회원목록 조회(관리자)
     public List<Member> findAllMember() {
         return memberRepository.findAll();
+    }
+
+    // 회원 id로 조회
+    public Optional<Member> findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 
     /*
@@ -127,8 +138,8 @@ public class MemberService {
 
         // email 중복체크 (email 변경 요청시에만 -> 기존 email 과 상이한 경우)
         if (!member.compWithOriginEmail(request.getEmail())) {
-            //log.info("이메일 상이! -> 중복검ㅅㅏ");
-            if (memberRepository.findByEmail(member.getEmail()).isPresent())
+            // id 로 찾은 회원과 같은 socialType 을 가진 회원 중, 변경하려는 이메일(request.email) 과 같은 이메일을 중복으로 가진 회원 조회
+            if (memberRepository.findByEmail(request.getEmail()).isPresent())
                 throw new BusinessLogicException(MemberException.EMAIL_DUP);
         }
 
@@ -136,6 +147,18 @@ public class MemberService {
                 request.getName(),
                 request.getEmail()
         );
+        return memberRepository.save(updatedMember);
+    }
+
+    /*
+     * [회원 비밀번호 수정]
+     * */
+    public Member updatePassword(String memberId, String newPassword) {
+        // id 로 회원 조회
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessLogicException(MemberException.USER_NOT_FOUND));
+        Member updatedMember = member.updatePassword(newPassword);  // 비밀번호 수정
+        updatedMember.encodePassword(passwordEncoder);              // 인코딩
         return memberRepository.save(updatedMember);
     }
 
@@ -149,5 +172,98 @@ public class MemberService {
 
         memberRepository.delete(member);
         return member;
+    }
+
+    /*
+     * [회원 주소 추가]
+     * */
+    public Member addAddress(String email, Address address) {
+        // email 로 회원 조회
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessLogicException(MemberException.USER_NOT_FOUND));
+        if (member.getDefaultAddress() == null)     // 기본 배송지가 없는 경우 -> 기본 배송지로 설정
+            member.setDefaultAddress(address);
+        Member updatedMember = member.addAddress(address);  // 주소 리스트에 추가
+        return memberRepository.save(updatedMember);
+    }
+
+    /*
+     * [기본 배송지 설정]
+     * */
+    public Member setDefaultAddress(String email, String addressId) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessLogicException(MemberException.USER_NOT_FOUND));
+        List<Address> addressList = member.getAddressList();
+        Address findAddress = null;
+        for (Address address : addressList) {
+            if (address.getId().equals(addressId)) {
+                findAddress = address;
+                break;
+            }
+        }
+        if (findAddress == null) throw new BusinessLogicException(AddressException.ADDRESS_NOT_FOUND);
+        return memberRepository.save(member.setDefaultAddress(findAddress));
+    }
+
+    /*
+     * [기본 배송지 조회]
+     * */
+    public Address findDefaultAddress(String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessLogicException(MemberException.USER_NOT_FOUND));
+        return member.getDefaultAddress();
+    }
+
+    /*
+     * [주소 리스트 조회]
+     * */
+    public List<Address> findAllAddress(String email) {
+        // email 로 회원 조회
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessLogicException(MemberException.USER_NOT_FOUND));
+        List<Address> addressList = member.getAddressList();    // 주소 리스트 불러오기
+        return addressList;
+    }
+
+    /*
+     * [주소 수정]
+     * */
+    public Member updateAddress(String email, String addressId, AddressUpdateRequest request) {
+        // email 로 회원 조회
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessLogicException(MemberException.USER_NOT_FOUND));
+        Address addressToUpdate = request.toEntity();
+        // 회원 기본 배송지에서 id 로 조회 후 수정
+        Address defaultAddress = member.getDefaultAddress();
+        if (defaultAddress.getId().equals(addressId))
+            member.setDefaultAddress(defaultAddress.update(addressToUpdate));
+        // 회원의 주소 리스트에서 id 로 주소 조회 후 수정
+        List<Address> updatedAddressList = member.getAddressList().stream().map(address -> {
+            if (address.getId().equals(addressId)) {
+                return address.update(addressToUpdate);
+            }
+            return address;
+        }).toList();
+        return memberRepository.save(member.updateAddressList(updatedAddressList));
+    }
+
+    /*
+     * [주소 삭제]
+     * */
+    public Member deleteAddress(String email, String addressId) {
+        // email 로 회원 조회
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessLogicException(MemberException.USER_NOT_FOUND));
+        // 주소 리스트에서 id 로 조회해 삭제 후 업데이트
+        List<Address> addressList = member.getAddressList();
+        List<Address> updatedAddressList = new ArrayList<>();
+        for (Address address : addressList) {
+            if (!address.getId().equals(addressId)) updatedAddressList.add(address);
+        }
+        // 기본 배송지를 삭제하는 경우
+        Address defaultAddress = member.getDefaultAddress();
+        if (defaultAddress.getId().equals(addressId))
+            member.setDefaultAddress(updatedAddressList.get(0));    // 리스트 중 첫번째를 기본 배송지로 설정
+        return memberRepository.save(member.updateAddressList(updatedAddressList));
     }
 }

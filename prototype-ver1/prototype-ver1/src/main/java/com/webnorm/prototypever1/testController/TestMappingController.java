@@ -12,6 +12,7 @@ public class TestMappingController {
     public String home() {
         return "/home";
     }
+
     // 회원가입 링킹(테스트용)
     @RequestMapping("/members/signup")
     public String signup() {
@@ -27,4 +28,7 @@ public class TestMappingController {
     public String login() {
         return "/members/loginForm";
     }
+
+    @RequestMapping("/addressPage")
+    public String addressForm() { return "/members/addressForm";}
 }

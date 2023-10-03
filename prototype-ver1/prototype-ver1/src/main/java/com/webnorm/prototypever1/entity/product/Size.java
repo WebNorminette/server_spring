@@ -5,7 +5,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 
-@Document
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Size implements Serializable {

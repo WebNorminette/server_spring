@@ -5,16 +5,21 @@ import com.webnorm.prototypever1.exception.exceptions.AuthException;
 import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Map;
 import java.util.UUID;
 
 @Getter
 public class OAuthAttributes {
+
     private Map<String, Object> attributes;
     private String nameAttributeKey;
     private String name;
     private String email;
+
 
     @Builder
     public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey,
@@ -81,7 +86,7 @@ public class OAuthAttributes {
         return Member.builder()
                 .email(email)
                 .name(name)
-                .password(UUID.randomUUID() + socialType.name())
+                .password(UUID.randomUUID() + socialType.toString())
                 .socialType(socialType)
                 .build();
     }

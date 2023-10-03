@@ -2,11 +2,13 @@ package com.webnorm.prototypever1.controller;
 
 import com.webnorm.prototypever1.dto.request.member.MemberLoginRequest;
 import com.webnorm.prototypever1.dto.request.member.MemberSignupRequest;
+import com.webnorm.prototypever1.dto.request.member.MemberUpdatePasswordRequest;
 import com.webnorm.prototypever1.dto.request.member.MemberUpdateRequest;
 import com.webnorm.prototypever1.dto.response.member.MemberListResponse;
 import com.webnorm.prototypever1.dto.response.MultiResponse;
 import com.webnorm.prototypever1.dto.response.SingleResponse;
 import com.webnorm.prototypever1.entity.member.Member;
+import com.webnorm.prototypever1.exception.exceptions.MemberException;
 import com.webnorm.prototypever1.security.redis.RedisTokenInfo;
 import com.webnorm.prototypever1.exception.exceptions.AuthException;
 import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
@@ -42,7 +44,7 @@ public class MemberController {
         DataPatternMatcher.doesMatch(request.getPassword(), DataPattern.PASSWORD);
         // dto -> entity 전환
         Member member = request.toEntity();
-        // service로 넘김
+        // service 로 넘김
         memberService.saveMember(member);
         // 가입 확인용 email 전송
         emailController.sendWelcomeEmail(member.getEmail(), member.getName());
@@ -104,14 +106,25 @@ public class MemberController {
         return new SingleResponse(HttpStatus.OK, "logout success");
     }
 
-    // 회원정보 수정 (email, name만 수정 가능)
-    @PutMapping("/{memberId}")
+    // 회원정보 수정 (email, name 수정용)
+    @PutMapping("/update/{memberId}")
     public SingleResponse update(
             @PathVariable("memberId") String memberId,
             @RequestBody MemberUpdateRequest request) {
         // id로 회원 조회 후 수정
         Member updatedMember = memberService.updateMember(memberId, request);
         return new SingleResponse(HttpStatus.OK, "successfully updated member " + updatedMember.getName());
+    }
+
+    // 회원정보 수정 (password 수정용)
+    @PutMapping("/update-password/{memberId}")
+    public SingleResponse updatePassword(
+            @PathVariable("memberId") String memberId,
+            @RequestBody MemberUpdatePasswordRequest request
+    ) {
+        // id 로 회원 조회 후 수정
+        Member updatedMember = memberService.updatePassword(memberId, request.getPassword());
+        return new SingleResponse(HttpStatus.OK, "successfully updated password from member " + updatedMember.getName());
     }
 
     // 회원 탈퇴

@@ -4,13 +4,14 @@ package com.webnorm.prototypever1.entity.product;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
 @AllArgsConstructor
 @Getter
 @Builder
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@Document
 public class Product {
     @Id
     private String id;

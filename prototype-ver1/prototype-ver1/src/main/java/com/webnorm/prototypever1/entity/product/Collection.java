@@ -7,7 +7,6 @@ import org.springframework.data.annotation.Id;
 @AllArgsConstructor
 @Getter
 @Builder
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Collection {
     @Id
     private String id;

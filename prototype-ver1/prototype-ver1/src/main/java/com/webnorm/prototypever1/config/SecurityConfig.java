@@ -50,16 +50,15 @@ public class SecurityConfig {
                 )
                 // api request 설정
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(HttpMethod.GET, "/home", "/css/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/members/signup", "/members/loginPage").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/", "/css/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/members/signup", "/members/loginPage", "/addressPage").permitAll()
                         // 위에 두줄은 삭제 예정
-                        .requestMatchers(HttpMethod.POST, "/members", "members/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/members/reissue").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/collections/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/login").permitAll()
-                        .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/members", "/api/members/login").permitAll()     // 회원가입, 로그인
+                        .requestMatchers(HttpMethod.GET, "/api/members/reissue").permitAll()                    // 토큰 재발급
+                        .requestMatchers(HttpMethod.POST, "/email/password/**").permitAll()                     // 임시 비밀번호 메일 발송
+                        .requestMatchers(HttpMethod.GET, "/collections/**").permitAll()                         // 상품 목록 조회
+                        .requestMatchers(HttpMethod.POST, "/addresses").permitAll()                             // 주소 추가
+                        .anyRequest().authenticated()
                 )
                 // filter, handler 설정
                 .exceptionHandling(exceptionHandling ->
