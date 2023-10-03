@@ -1,41 +1,37 @@
 package com.webnorm.prototypever1.entity.product;
 
 
-import com.webnorm.prototypever1.entity.category.Category;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-@Document
+@AllArgsConstructor
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@Document
 public class Product {
     @Id
     private String id;
 
     private String name;
     private int price;
-    private List<Color> colors;
+    private String color;
+    private List<Size> sizeList;
     private String details;
-    private Category category;
+    private Collection collection;
     private String shipping;
+    private List<Image> imageList;
 
-    @Builder
-    public Product(String name, int price, List<Color> colors,
-                   String details, String shipping) {
-        this.name = name;
-        this.price = price;
-        this.colors = colors;
-        this.details = details;
-        this.shipping = shipping;
+    public Product mapCategory(Collection collection) {
+        this.collection = collection;
+        return this;
     }
 
-    public void specifyCategory(Category category) {
-        this.category = category;
+    public Product mapImageList(List<Image> imageList) {
+        this.imageList = imageList;
+        return this;
     }
 }

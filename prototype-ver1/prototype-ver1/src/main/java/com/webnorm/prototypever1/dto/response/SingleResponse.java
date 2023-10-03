@@ -1,9 +1,6 @@
-package com.webnorm.prototypever1.api.response;
+package com.webnorm.prototypever1.dto.response;
 
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @Getter

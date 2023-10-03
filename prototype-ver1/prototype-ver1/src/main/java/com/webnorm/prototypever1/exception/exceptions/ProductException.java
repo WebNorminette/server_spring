@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ProductException implements ExceptionCode {
     PRODUCT_NAME_DUP(HttpStatus.BAD_REQUEST, "product name duplicated"),
-    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "cannot find product");
+    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "cannot find product"),
+    FILE_INPUT_ERROR(HttpStatus.BAD_REQUEST, "cannot read file");
 
     private final HttpStatus status;
     private final String message;

@@ -1,10 +1,10 @@
-package com.webnorm.prototypever1.api.request;
+package com.webnorm.prototypever1.dto.request.member;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Data;
 
 @Data
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class AddCategoryRequest {
-    private String name;
+public class MemberUpdatePasswordRequest {
+    private String password;
 }

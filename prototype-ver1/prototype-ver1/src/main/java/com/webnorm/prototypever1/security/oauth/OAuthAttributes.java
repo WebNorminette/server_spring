@@ -5,16 +5,21 @@ import com.webnorm.prototypever1.exception.exceptions.AuthException;
 import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Map;
 import java.util.UUID;
 
 @Getter
 public class OAuthAttributes {
+
     private Map<String, Object> attributes;
     private String nameAttributeKey;
     private String name;
     private String email;
+
 
     @Builder
     public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey,
@@ -41,10 +46,11 @@ public class OAuthAttributes {
         // name 찾기
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
         String name = (String) response.get("name");
+        String email = (String) response.get("email");
         if (name.isEmpty()) throw new BusinessLogicException(AuthException.OAUTH_CANOOT_FIND_USERNAME);
         return OAuthAttributes.builder()
                 .name(name)
-                .email(UUID.randomUUID() + "@naverUser.com")
+                .email(email)
                 .attributes(attributes)
                 .nameAttributeKey(userNameAttributeName)
                 .build();
@@ -56,10 +62,11 @@ public class OAuthAttributes {
         Map<String, Object> response = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> profile = (Map<String, Object>) response.get("profile");
         String nickname = (String) profile.get("nickname");
+        String email = (String) response.get("email");
         if (nickname.isEmpty()) throw new BusinessLogicException(AuthException.OAUTH_CANOOT_FIND_USERNAME);
         return OAuthAttributes.builder()
                 .name(nickname)
-                .email(UUID.randomUUID() + "@kakaoUser.com")
+                .email(email)
                 .attributes(attributes)
                 .nameAttributeKey(userNameAttributeName)
                 .build();
@@ -79,6 +86,7 @@ public class OAuthAttributes {
         return Member.builder()
                 .email(email)
                 .name(name)
+                .password(UUID.randomUUID() + socialType.toString())
                 .socialType(socialType)
                 .build();
     }

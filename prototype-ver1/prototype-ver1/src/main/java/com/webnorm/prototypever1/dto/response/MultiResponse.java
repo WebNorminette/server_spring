@@ -1,6 +1,5 @@
-package com.webnorm.prototypever1.api.response;
+package com.webnorm.prototypever1.dto.response;
 
-import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 

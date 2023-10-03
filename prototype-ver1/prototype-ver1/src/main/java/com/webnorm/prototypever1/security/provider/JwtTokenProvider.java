@@ -1,7 +1,10 @@
 package com.webnorm.prototypever1.security.provider;
 
+import com.webnorm.prototypever1.entity.member.Member;
+import com.webnorm.prototypever1.entity.member.MemberAdapter;
 import com.webnorm.prototypever1.exception.exceptions.AuthException;
 import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
+import com.webnorm.prototypever1.security.oauth.SocialType;
 import com.webnorm.prototypever1.service.CustomUserDetailService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -38,8 +41,8 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // 유저 정보를 사용해 AccessToken 생성
-    public String generateAccessToken(Authentication authentication) {
+    // 유저 정보 + SocialType을  사용해 AccessToken 생성
+    public String generateAccessToken(Authentication authentication, SocialType socialType, String email) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));  // 권한 가져와서 저장
@@ -47,9 +50,29 @@ public class JwtTokenProvider {
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth", authorities)
+                .claim("socialType", socialType.toString())
+                .claim("email", email)
                 .setExpiration(new Date(now + 3 * HOUR))  // 만료기한 3시간으로 설정
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();     // accessToken 생성
+        return accessToken;
+    }
+
+    // AccessToken 으로 AccessToken 재발급
+    public String regenerateAccessTokenByAccessToken(Authentication authentication, String accessToken) {
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+        long now = (new Date()).getTime();
+        Claims claims = parseClaims(accessToken);
+        Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim("auth", authorities)
+                .claim("socialType", claims.get("socialType").toString())
+                .claim("email", claims.get("email").toString())
+                .setExpiration(new Date(now + 3 * HOUR))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
         return accessToken;
     }
 
@@ -69,12 +92,13 @@ public class JwtTokenProvider {
         if (claims.get("auth") == null) {           // 권한 정보 없는 토큰 예외처리
             throw new BusinessLogicException(AuthException.NO_AUTH_IN_TOKEN);
         }
-        UserDetails userDetails = customUserDetailService.loadUserByUsername(claims.getSubject());
+        // email 로 조회
+        UserDetails userDetails = customUserDetailService.loadUserByUsername(claims.get("email").toString());
         return new UsernamePasswordAuthenticationToken(userDetails, " ", userDetails.getAuthorities());
     }
 
     // jwt 파싱해서 claim 생성하는 메소드
-    private Claims parseClaims(String accessToken) {
+    public Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder().
                     setSigningKey(key).

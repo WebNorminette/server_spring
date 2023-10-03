@@ -1,6 +1,7 @@
 package com.webnorm.prototypever1.entity.member;
 
 import com.mongodb.lang.NonNull;
+import com.webnorm.prototypever1.dto.response.member.MemberListResponse;
 import com.webnorm.prototypever1.security.oauth.SocialType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -11,15 +12,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Document(collection = "members")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
    @Id
    private String id;
@@ -31,32 +28,37 @@ public class Member {
    private String name;
    @NonNull
    private SocialType socialType;    // 소셜로그인 구분
-
    @NonNull
-   private List<String> roles = new ArrayList<>();
+   private List<String> roles = new ArrayList<>();  // 권한 리스트
 
+    private List<Address> addressList = new ArrayList<>();  // 주소 리스트
+    private Address defaultAddress;     // 기본 배송지
+
+
+/*   // 이하는 현재 미사용중인 필드
+   private String gender;
+   private Msc marketingMessageConsent;
    private String phoneNumber;
+   private int  point;*/
 
-   // 이하는 현재 미사용중인 필드
-//   private String gender;
-//   private Msc marketingMessageConsent;
-//   private Address address;
-//   private int  point;
+    @Builder
+    public Member(@NonNull String email, @NonNull String password,
+                  @NonNull String name, @NonNull SocialType socialType) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.socialType = socialType;
+        this.roles.add("USER");
+    }
 
-   @Builder
-   public Member(String email, String password, String name, SocialType socialType) {
-       Assert.hasText(email, "email cannot be empty");
-       Assert.hasText(name, "name cannot be empty");
-       Assert.notNull(socialType, "socialType cannot be empty");
-       //Assert.hasText(password, "password cannot be empty");
-
-
-       this.email = email;
-       this.name = name;
-       this.password = password;
-       this.socialType = socialType;
-       this.roles.add("USER");
-   }
+    public MemberListResponse toMemberListResponse() {
+        return MemberListResponse.builder()
+                .id(id)
+                .email(email)
+                .name(name)
+                .socialType(socialType)
+                .build();
+    }
 
     // 비밀번호 encoding 메서드
     public void encodePassword(PasswordEncoder passwordEncoder) {
@@ -67,8 +69,31 @@ public class Member {
     public Member update(String name, String email) {
        if (name != null)    this.name = name;
        if (email != null)   this.email = email;
-
        return this;
+    }
+
+    // 주소 추가 메서드
+    public Member addAddress(Address address) {
+        addressList.add(address);
+        return this;
+    }
+
+    // 주소 리스트 업데이트 메서드
+    public Member updateAddressList(List<Address> addressList) {
+        if (addressList != null) this.addressList = addressList;
+        return this;
+    }
+
+    // 기본 배송지 설정 메서드
+    public Member setDefaultAddress(Address address) {
+        this.defaultAddress = address;
+        return this;
+    }
+
+    // password update 메서드
+    public Member updatePassword(String password) {
+        if (password != null) this.password = password;
+        return this;
     }
 
     public boolean compWithOriginEmail(String newEmail) {

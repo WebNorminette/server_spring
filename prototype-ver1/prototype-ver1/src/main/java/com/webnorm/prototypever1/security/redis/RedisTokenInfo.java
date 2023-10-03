@@ -33,8 +33,9 @@ public class RedisTokenInfo implements Serializable {
         this.refreshToken = refreshToken;
     }
 
-    public void update(String accessToken, String refreshToken) {
+    public RedisTokenInfo update(String accessToken, String refreshToken) {
         this.refreshToken = refreshToken;
         this.accessToken = accessToken;
+        return this;
     }
 }

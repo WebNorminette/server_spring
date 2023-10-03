@@ -1,8 +1,10 @@
-package com.webnorm.prototypever1.repository;
+    package com.webnorm.prototypever1.repository;
 
 import com.webnorm.prototypever1.entity.product.Product;
+import org.springframework.data.domain.Page;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +13,7 @@ import java.util.Optional;
 
 
 @Repository
-public interface ProductRepository extends MongoRepository<Product, String> {
+public interface ProductRepository extends MongoRepository<Product, String>, PagingAndSortingRepository<Product, String> {
     Optional<Product> findByName(String name);
 
     @Query("{'$or': " +
@@ -26,4 +28,6 @@ public interface ProductRepository extends MongoRepository<Product, String> {
 
     @Query("{'category.name': {$regex: ?0, $options: 'i'}}")
     List<Product> findByCategory(String category);
+
+//    Page<Product> findAll(new PageRequest)
 }

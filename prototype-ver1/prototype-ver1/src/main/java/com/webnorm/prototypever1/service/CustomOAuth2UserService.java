@@ -8,6 +8,7 @@ import com.webnorm.prototypever1.repository.MemberRepository;
 import com.webnorm.prototypever1.security.oauth.SocialType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -16,6 +17,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +50,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 user.getAuthorities(),
                 attributes.getAttributes(),
                 attributes.getNameAttributeKey(),
-                user.getUsername()
+                attributes.getEmail(),
+                socialType
         );
     }
 
@@ -63,11 +66,20 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         return SocialType.GOOGLE;
     }
 
-    // email 과 socialType 으로 Member 조회해서 존재하는 경우 그냥 리턴, 없는 경우 생성해서 리턴
+    // email 로 Member 조회해서 존재하는 경우 업데이트해서 리턴, 없는 경우 생성해서 리턴
     private User saveOrUpdate(OAuthAttributes attributes, SocialType socialType) {
         Optional<Member> findMember = memberRepository
-                .findByEmailAndSocialType(attributes.getEmail(), socialType);
-        if (findMember.isPresent()) return new MemberAdapter(findMember.get());
-        else return new MemberAdapter(memberRepository.save(attributes.toEntity(socialType)));
+                .findByEmail(attributes.getEmail());
+        if (findMember.isPresent()){    // 존재하는 경우 update
+            Member member = findMember.get();
+            Member savedMember = memberRepository.save(
+                    member.update(member.getName(), member.getEmail())
+            );
+            return new MemberAdapter(savedMember);
+        }
+        // 존재하지 않는 경우 생성 후 save
+        else {
+            return new MemberAdapter(memberRepository.save(attributes.toEntity(socialType)));
+        }
     }
 }

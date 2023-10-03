@@ -50,10 +50,11 @@ public class OAuthLoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private TokenInfo getTokenInfo(Authentication authentication, CustomOAuth2User oAuth2User) {
         // 인증 결과를 넣어 atk 생성
-        String accessToken = jwtTokenProvider.generateAccessToken(authentication);
+        String accessToken = jwtTokenProvider
+                .generateAccessToken(authentication, oAuth2User.getSocialType(), oAuth2User.getEmail());
         // refresh token 생성
         String refreshToken = jwtTokenProvider.generateRefreshToken();
-        // redis 에 refreshToken 저장
+        // redis 에 Token 저장
         redisTokenInfoRepository.save(
                 RedisTokenInfo.builder()
                         .id(oAuth2User.getEmail())
