@@ -3,13 +3,9 @@ package com.webnorm.prototypever1.controller;
 import com.webnorm.prototypever1.dto.request.address.AddressAddRequest;
 import com.webnorm.prototypever1.dto.request.address.AddressUpdateRequest;
 import com.webnorm.prototypever1.dto.response.AddressListResponse;
-import com.webnorm.prototypever1.dto.response.MultiResponse;
 import com.webnorm.prototypever1.dto.response.SingleResponse;
 import com.webnorm.prototypever1.entity.member.Address;
 import com.webnorm.prototypever1.entity.member.Member;
-import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
-import com.webnorm.prototypever1.exception.exceptions.MemberException;
-import com.webnorm.prototypever1.service.AddressService;
 import com.webnorm.prototypever1.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -29,7 +23,6 @@ import java.util.List;
 @RequestMapping("/addresses")
 public class AddressController {
     private final MemberService memberService;
-    private final AddressService addressService;
 
     // 주소 추가
     @PostMapping
