@@ -72,8 +72,8 @@ cloud:
     s3:
       bucket: webnorm-test-bucket
     credentials:
-      access-key: AKIA4CFYP3MR4G37OD4B
-      secret-key: 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
+      access-key: ${S3_ACCESSKEY}
+      secret-key: ${S3_SECRETKEY}
     region:
       static: ap-northeast-2
       auto: false
