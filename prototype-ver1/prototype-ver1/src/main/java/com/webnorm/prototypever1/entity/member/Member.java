@@ -5,6 +5,7 @@ import com.webnorm.prototypever1.dto.response.member.MemberListResponse;
 import com.webnorm.prototypever1.security.oauth.SocialType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.domain.Page;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -51,14 +52,6 @@ public class Member {
         this.roles.add("USER");
     }
 
-    public MemberListResponse toMemberListResponse() {
-        return MemberListResponse.builder()
-                .id(id)
-                .email(email)
-                .name(name)
-                .socialType(socialType)
-                .build();
-    }
 
     // 비밀번호 encoding 메서드
     public void encodePassword(PasswordEncoder passwordEncoder) {

@@ -58,14 +58,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/members/reissue").permitAll()                    // 토큰 재발급
                         .requestMatchers(HttpMethod.POST, "/email/password/**").permitAll()                     // 임시 비밀번호 메일 발송
                         .requestMatchers(HttpMethod.GET, "/collections/**").permitAll()                         // 상품 목록 조회
+                        .requestMatchers(HttpMethod.GET, "/pages/search/**").permitAll()                        // 상품 검색
                         .requestMatchers(HttpMethod.POST, "/addresses").permitAll()                             // 주소 추가
                         // 관리자만 허용
                         .requestMatchers(HttpMethod.GET, "/api/members").hasAuthority("ADMIN")                  // 회원 목록 조회
                         .requestMatchers(HttpMethod.POST, "/collections").hasAuthority("ADMIN")                 // 카테고리 추가
                         .requestMatchers(HttpMethod.PUT, "/collections/**").hasAuthority("ADMIN")               // 카테고리 수정
                         .requestMatchers(HttpMethod.DELETE, "collections/**").hasAuthority("ADMIN")             // 카테고리 삭제
-                        .requestMatchers(HttpMethod.POST, "/collections/**/products").hasAnyAuthority("ADMIN")  // 상품 추가
-                        .requestMatchers(HttpMethod.POST, "/collections/products/img").hasAnyAuthority("ADMIN") // 상품 이미지 추가
+                        .requestMatchers(HttpMethod.POST, "/collections/*/products").hasAuthority("ADMIN")      // 상품 추가
+                        .requestMatchers(HttpMethod.POST, "/collections/*/products/img").hasAuthority("ADMIN")  // 상품 이미지 추가
+                        .requestMatchers(HttpMethod.PUT, "/collections/*/products/**").hasAuthority("ADMIN")    // 상품 수정
+                        .requestMatchers(HttpMethod.DELETE, "/collections/*/products/**").hasAuthority("ADMIN") // 상품 삭제
                         // 관리자, 사용자 허용
                         .anyRequest().hasAnyAuthority("ADMIN", "USER")
                 )

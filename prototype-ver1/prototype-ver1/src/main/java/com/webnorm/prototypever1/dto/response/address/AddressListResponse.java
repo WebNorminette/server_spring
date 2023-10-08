@@ -1,4 +1,4 @@
-package com.webnorm.prototypever1.dto.response;
+package com.webnorm.prototypever1.dto.response.address;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.webnorm.prototypever1.entity.member.Address;

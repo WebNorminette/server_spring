@@ -2,7 +2,7 @@ package com.webnorm.prototypever1.controller;
 
 import com.webnorm.prototypever1.dto.request.address.AddressAddRequest;
 import com.webnorm.prototypever1.dto.request.address.AddressUpdateRequest;
-import com.webnorm.prototypever1.dto.response.AddressListResponse;
+import com.webnorm.prototypever1.dto.response.address.AddressListResponse;
 import com.webnorm.prototypever1.dto.response.SingleResponse;
 import com.webnorm.prototypever1.entity.member.Address;
 import com.webnorm.prototypever1.entity.member.Member;

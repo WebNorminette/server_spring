@@ -16,7 +16,6 @@ public class Image {
     private String originName;
     private String saveName;
     private String url;
-    private ObjectMetadata metadata;
 
     public Image mapProductId(String productId) {
         this.productId = productId;

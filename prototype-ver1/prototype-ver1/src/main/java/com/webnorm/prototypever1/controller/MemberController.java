@@ -19,6 +19,9 @@ import com.webnorm.prototypever1.util.DataPattern;
 import com.webnorm.prototypever1.util.DataPatternMatcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
@@ -55,13 +58,15 @@ public class MemberController {
     // 회원목록 조회(관리자) : response(dto) 리스트를 stream을 이용해 member 리스트로 매핑
     @GetMapping
     //@PreAuthorize("hasAuthority('USER')")
-    public MultiResponse  memberList() {
+    public MultiResponse memberList(Pageable pageable) {
         // 전체 회원 조회
-        List<Member> findMembers = memberService.findAllMember();
-        // entity -> dto 리스트로 전환
-        List<MemberListResponse> memberList = findMembers.stream()
-                .map(m -> m.toMemberListResponse())
-                .collect(Collectors.toList());
+        Page<MemberListResponse> memberList = memberService
+                .findAllMember(PageRequest.of(pageable.getPageNumber(), 20))
+                .map(m -> MemberListResponse.builder()
+                        .id(m.getId())
+                        .name(m.getName())
+                        .socialType(m.getSocialType())
+                        .build());
         return new MultiResponse(HttpStatus.OK, "successfully found memberList", memberList);
     }
 
