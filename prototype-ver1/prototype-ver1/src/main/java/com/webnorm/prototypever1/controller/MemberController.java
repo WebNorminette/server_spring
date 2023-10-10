@@ -8,18 +8,27 @@ import com.webnorm.prototypever1.dto.response.member.MemberListResponse;
 import com.webnorm.prototypever1.dto.response.MultiResponse;
 import com.webnorm.prototypever1.dto.response.SingleResponse;
 import com.webnorm.prototypever1.entity.member.Member;
+import com.webnorm.prototypever1.entity.order.Order;
 import com.webnorm.prototypever1.exception.exceptions.MemberException;
 import com.webnorm.prototypever1.security.redis.RedisTokenInfo;
 import com.webnorm.prototypever1.exception.exceptions.AuthException;
 import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
 import com.webnorm.prototypever1.service.MemberService;
 import com.webnorm.prototypever1.security.TokenInfo;
+import com.webnorm.prototypever1.service.OrderService;
 import com.webnorm.prototypever1.service.RedisTokenInfoService;
 import com.webnorm.prototypever1.util.DataPattern;
 import com.webnorm.prototypever1.util.DataPatternMatcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +43,7 @@ public class MemberController {
     private final MemberService memberService;
     private final EmailController emailController;
     private final RedisTokenInfoService redisTokenInfoService;
+    private final OrderService orderService;
 
     // 회원가입 : request(dto)를 member 엔티티에 매핑, 메일 발송
     @PostMapping
@@ -54,13 +64,15 @@ public class MemberController {
     // 회원목록 조회(관리자) : response(dto) 리스트를 stream을 이용해 member 리스트로 매핑
     @GetMapping
     //@PreAuthorize("hasAuthority('USER')")
-    public MultiResponse memberList() {
+    public MultiResponse memberList(Pageable pageable) {
         // 전체 회원 조회
-        List<Member> findMembers = memberService.findAllMember();
-        // entity -> dto 리스트로 전환
-        List<MemberListResponse> memberList = findMembers.stream()
-                .map(m -> m.toMemberListResponse())
-                .collect(Collectors.toList());
+        Page<MemberListResponse> memberList = memberService
+                .findAllMember(PageRequest.of(pageable.getPageNumber(), 20))
+                .map(m -> MemberListResponse.builder()
+                        .id(m.getId())
+                        .name(m.getName())
+                        .socialType(m.getSocialType())
+                        .build());
         return new MultiResponse(HttpStatus.OK, "successfully found memberList", memberList);
     }
 
@@ -133,5 +145,14 @@ public class MemberController {
         // id 로 사용자 삭제
         Member deletedMember = memberService.deleteMember(memberId);
         return new SingleResponse(HttpStatus.OK, "successfully deleted member " + deletedMember.getId());
+    }
+
+    // 회원 주문 조회
+    @GetMapping("/orders")
+    public MultiResponse orderList(@AuthenticationPrincipal User user, Pageable pageable) {
+        // 정렬기준 설정
+        Sort sort = Sort.by("createDate").descending();
+        Page<Order> orderList = orderService.findByEmail(user.getUsername(), PageRequest.of(pageable.getPageNumber(), 2, sort));
+        return new MultiResponse(HttpStatus.OK, "successfully found orderlist", orderList);
     }
 }

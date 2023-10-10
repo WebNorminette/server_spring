@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Id;
 @AllArgsConstructor
 @Getter
 @Builder
-public class Collection {
+public class Collection implements Comparable<Collection>{
     @Id
     private String id;
     private String name;
@@ -21,5 +21,10 @@ public class Collection {
     public Collection updateOrder(int order) {
         this.order = order;
         return this;
+    }
+
+    @Override
+    public int compareTo(Collection collection) {
+        return this.order - collection.order;
     }
 }

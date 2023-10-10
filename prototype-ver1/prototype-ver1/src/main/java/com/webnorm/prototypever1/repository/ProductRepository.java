@@ -1,7 +1,9 @@
     package com.webnorm.prototypever1.repository;
 
+import com.webnorm.prototypever1.entity.product.Collection;
 import com.webnorm.prototypever1.entity.product.Product;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -13,9 +15,7 @@ import java.util.Optional;
 
 
 @Repository
-public interface ProductRepository extends MongoRepository<Product, String>, PagingAndSortingRepository<Product, String> {
-    Optional<Product> findByName(String name);
-
+public interface ProductRepository extends MongoRepository<Product, String> {
     @Query("{'$or': " +
                 "[" +
                     "{'name': {$regex: ?0, $options: 'i'}}, " +
@@ -24,10 +24,13 @@ public interface ProductRepository extends MongoRepository<Product, String>, Pag
                     "{'category.name': {$regex: ?0, $options: 'i'}}" +
                 "]" +
             "}")
-    List<Product> findByTerm(String term);
+    Page<Product> findByTerm(String term, Pageable pageable);
 
-    @Query("{'category.name': {$regex: ?0, $options: 'i'}}")
-    List<Product> findByCategory(String category);
+    //@Query("{'category': {$regex: ?0, $options: 'i'}}")
+    Page<Product> findByCollection(Collection collection, Pageable pageable);
 
-//    Page<Product> findAll(new PageRequest)
+    Page<Product> findAll(Pageable pageable);
+
+    List<Product> findByName(String name);
+
 }

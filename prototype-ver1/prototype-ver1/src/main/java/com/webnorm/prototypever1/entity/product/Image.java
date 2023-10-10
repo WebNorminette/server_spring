@@ -11,12 +11,12 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Image {
     private String productId;
     private String originName;
     private String saveName;
     private String url;
-    private ObjectMetadata metadata;
 
     public Image mapProductId(String productId) {
         this.productId = productId;

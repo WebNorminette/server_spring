@@ -5,6 +5,7 @@ import com.webnorm.prototypever1.dto.request.address.AddressUpdateRequest;
 import com.webnorm.prototypever1.dto.request.member.MemberUpdateRequest;
 import com.webnorm.prototypever1.entity.member.Address;
 import com.webnorm.prototypever1.entity.member.Member;
+import com.webnorm.prototypever1.entity.order.Order;
 import com.webnorm.prototypever1.exception.exceptions.AddressException;
 import com.webnorm.prototypever1.security.oauth.SocialType;
 import com.webnorm.prototypever1.security.redis.RedisTokenInfo;
@@ -19,6 +20,8 @@ import com.webnorm.prototypever1.util.DataPattern;
 import com.webnorm.prototypever1.util.DataPatternMatcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -56,13 +59,14 @@ public class MemberService {
     }
 
     // 회원목록 조회(관리자)
-    public List<Member> findAllMember() {
-        return memberRepository.findAll();
+    public Page<Member> findAllMember(Pageable pageable) {
+        return memberRepository.findAll(pageable);
     }
 
     // 회원 id로 조회
-    public Optional<Member> findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email);
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessLogicException(MemberException.USER_NOT_FOUND));
     }
 
     /*

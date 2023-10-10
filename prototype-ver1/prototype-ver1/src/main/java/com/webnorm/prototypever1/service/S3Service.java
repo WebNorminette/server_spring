@@ -50,7 +50,6 @@ public class S3Service {
         return Image.builder()
                 .originName(originalFilename)
                 .saveName(saveFilename)
-                .metadata(metadata)
                 .url(url)
                 .build();
     }

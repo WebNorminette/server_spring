@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +44,9 @@ public class CollectionService {
      * [카테고리 전체 조회]
      */
     public List<Collection> findAll() {
-        return collectionRepository.findAll();
+        List<Collection> collectionList = collectionRepository.findAll();
+        Collections.sort(collectionList);
+        return collectionList;
     }
 
     /*

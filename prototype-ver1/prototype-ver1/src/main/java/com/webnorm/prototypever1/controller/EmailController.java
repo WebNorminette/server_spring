@@ -37,8 +37,7 @@ public class EmailController {
     @PostMapping("/password/{email}")
     public SingleResponse sendPasswordResetEmail(@PathVariable("email") String email) {
         // email 로 회원 조회
-        Member member = memberService.findMemberByEmail(email)
-                .orElseThrow(() -> new BusinessLogicException(MemberException.USER_NOT_FOUND));
+        Member member = memberService.findMemberByEmail(email);
         // email 생성
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(email)

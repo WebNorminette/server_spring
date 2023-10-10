@@ -50,15 +50,28 @@ public class SecurityConfig {
                 )
                 // api request 설정
                 .authorizeHttpRequests(request -> request
+                        // 두줄은 삭제 예정
                         .requestMatchers(HttpMethod.GET, "/", "/css/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/members/signup", "/members/loginPage", "/addressPage").permitAll()
-                        // 위에 두줄은 삭제 예정
+                        // 전체 공개
                         .requestMatchers(HttpMethod.POST, "/api/members", "/api/members/login").permitAll()     // 회원가입, 로그인
                         .requestMatchers(HttpMethod.GET, "/api/members/reissue").permitAll()                    // 토큰 재발급
                         .requestMatchers(HttpMethod.POST, "/email/password/**").permitAll()                     // 임시 비밀번호 메일 발송
                         .requestMatchers(HttpMethod.GET, "/collections/**").permitAll()                         // 상품 목록 조회
+                        .requestMatchers(HttpMethod.GET, "/pages/search/**").permitAll()                        // 상품 검색
                         .requestMatchers(HttpMethod.POST, "/addresses").permitAll()                             // 주소 추가
-                        .anyRequest().authenticated()
+                        // 관리자만 허용
+                        .requestMatchers(HttpMethod.GET, "/api/members").hasAuthority("ADMIN")                  // 회원 목록 조회
+                        .requestMatchers(HttpMethod.POST, "/collections").hasAuthority("ADMIN")                 // 카테고리 추가
+                        .requestMatchers(HttpMethod.PUT, "/collections/**").hasAuthority("ADMIN")               // 카테고리 수정
+                        .requestMatchers(HttpMethod.DELETE, "collections/**").hasAuthority("ADMIN")             // 카테고리 삭제
+                        .requestMatchers(HttpMethod.POST, "/collections/*/products").hasAuthority("ADMIN")      // 상품 추가
+                        .requestMatchers(HttpMethod.POST, "/collections/*/products/img").hasAuthority("ADMIN")  // 상품 이미지 추가
+                        .requestMatchers(HttpMethod.PUT, "/collections/*/products/**").hasAuthority("ADMIN")    // 상품 수정
+                        .requestMatchers(HttpMethod.DELETE, "/collections/*/products/**").hasAuthority("ADMIN") // 상품 삭제
+                        .requestMatchers(HttpMethod.GET, "/orders").hasAuthority("ADMIN")                       // 주문 목록(전체)
+                        // 관리자, 사용자 허용
+                        .anyRequest().hasAnyAuthority("ADMIN", "USER")
                 )
                 // filter, handler 설정
                 .exceptionHandling(exceptionHandling ->
@@ -66,6 +79,7 @@ public class SecurityConfig {
                                 .accessDeniedHandler(accessDeniedHandler))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(exceptionHandlerFilter, JwtAuthenticationFilter.class);
+
         return http.build();
     }
 

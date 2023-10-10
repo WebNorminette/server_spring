@@ -1,5 +1,7 @@
 package com.webnorm.prototypever1.service;
 
+import com.webnorm.prototypever1.dto.request.product.ProductUpdateRequest;
+import com.webnorm.prototypever1.entity.product.SimpleProduct;
 import com.webnorm.prototypever1.entity.product.Collection;
 import com.webnorm.prototypever1.entity.product.Image;
 import com.webnorm.prototypever1.entity.product.Product;
@@ -14,8 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,29 +38,61 @@ public class ProductService {
     }
 
     /*
+     * [id 로 조회]
+     * */
+    public Product findById(String productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new BusinessLogicException(ProductException.PRODUCT_NOT_FOUND));
+    }
+
+    /*
+     * [같은 상품의 다른 색상 조회]
+     * */
+    public List<SimpleProduct> findOtherColors(String productId) {
+        // id 로 조회
+        Product productById = productRepository.findById(productId)
+                .orElseThrow(() -> new BusinessLogicException(ProductException.PRODUCT_NOT_FOUND));
+        // 동일한 상품명 조회
+        List<Product> productListByName = productRepository.findByName(productById.getName());
+        // id 에 해당하는 상품을 제외한 나머지 상품 id 리스트 리턴
+        List<SimpleProduct> productList = new ArrayList<>();
+        for (Product product : productListByName) {
+            if (!product.getId().equals(productId)) {
+                Image mainImg = null;
+                if (product.getImageList() != null) mainImg = product.getImageList().get(0);
+                productList.add(SimpleProduct.builder()
+                        .id(product.getId())
+                        .color(product.getColor())
+                        .mainImg(mainImg)
+                        .build());
+            }
+        }
+        return productList;
+    }
+
+    /*
      * [전체 상품 조회]
      */
-    /*public Page<Product> findAll() {
-        //return productRepository.findAll();
-    }*/
+    public Page<Product> findAll(Pageable pageable) {
+        return productRepository.findAll(pageable);
+    }
 
     /*
     * [키워드로 조회]
     */
-    public List<Product> findByTerm(String term) {
-        List<Product> products = productRepository.findByTerm(term)
-                .stream()
-                .toList();
+    public Page<Product> findByTerm(String term, Pageable pageable) {
+        Page<Product> products = productRepository.findByTerm(term, pageable);
         return products;
     }
 
     /*
      * [카테고리로 조회]
      */
-    public List<Product> findByCategory(String category) {
-        Optional<Collection> findCategory = categoryRepository.findByName(category);
-        if (findCategory.isEmpty()) throw new BusinessLogicException(CollectionException.COLLECTION_NOT_FOUND);
-        return productRepository.findByCategory(category);
+    public Page<Product> findByCollection(String collection, Pageable pageable) {
+        // 카테고리 존재 여부 확인
+        Collection findCollection = categoryRepository.findByName(collection)
+                .orElseThrow(() -> new BusinessLogicException(CollectionException.COLLECTION_NOT_FOUND));
+        return productRepository.findByCollection(findCollection, pageable);
     }
 
     /*
@@ -72,5 +106,35 @@ public class ProductService {
         // db 에 저장
         Product savedProduct = productRepository.save(product);
         return savedProduct;
+    }
+
+    /*
+     * 상품 수정
+     * */
+    public Product updateProduct(String productId, ProductUpdateRequest request) {
+        // id 로 상품 조회
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BusinessLogicException(ProductException.PRODUCT_NOT_FOUND));
+        // 수정
+        Product updatedProduct = product.update(request.getName(),
+                request.getPrice(),
+                request.getColor(),
+                request.getDetails(),
+                request.getCollection(),
+                request.getShipping(),
+                request.getSizeList(),
+                request.getPriority());
+        // 수정된 엔티티 저장
+        return productRepository.save(updatedProduct);
+    }
+
+    /*
+     * [상품 삭제]
+     * */
+    public Product deleteProduct(String productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BusinessLogicException(ProductException.PRODUCT_NOT_FOUND));
+        productRepository.deleteById(productId);
+        return product;
     }
 }
