@@ -2,6 +2,7 @@ package com.webnorm.prototypever1.entity.member;
 
 import com.mongodb.lang.NonNull;
 import com.webnorm.prototypever1.dto.response.member.MemberListResponse;
+import com.webnorm.prototypever1.entity.order.Order;
 import com.webnorm.prototypever1.security.oauth.SocialType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,6 +33,7 @@ public class Member {
    private SocialType socialType;    // 소셜로그인 구분
    @NonNull
    private List<String> roles = new ArrayList<>();  // 권한 리스트
+    private LocalDateTime createDate;   // 가입일자
 
     private List<Address> addressList = new ArrayList<>();  // 주소 리스트
     private Address defaultAddress;     // 기본 배송지
@@ -50,6 +53,7 @@ public class Member {
         this.name = name;
         this.socialType = socialType;
         this.roles.add("USER");
+        this.createDate = LocalDateTime.now();
     }
 
 

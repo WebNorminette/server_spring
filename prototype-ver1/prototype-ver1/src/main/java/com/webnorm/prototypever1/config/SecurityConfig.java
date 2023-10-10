@@ -69,6 +69,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/collections/*/products/img").hasAuthority("ADMIN")  // 상품 이미지 추가
                         .requestMatchers(HttpMethod.PUT, "/collections/*/products/**").hasAuthority("ADMIN")    // 상품 수정
                         .requestMatchers(HttpMethod.DELETE, "/collections/*/products/**").hasAuthority("ADMIN") // 상품 삭제
+                        .requestMatchers(HttpMethod.GET, "/orders").hasAuthority("ADMIN")                       // 주문 목록(전체)
                         // 관리자, 사용자 허용
                         .anyRequest().hasAnyAuthority("ADMIN", "USER")
                 )

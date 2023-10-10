@@ -8,12 +8,14 @@ import com.webnorm.prototypever1.dto.response.member.MemberListResponse;
 import com.webnorm.prototypever1.dto.response.MultiResponse;
 import com.webnorm.prototypever1.dto.response.SingleResponse;
 import com.webnorm.prototypever1.entity.member.Member;
+import com.webnorm.prototypever1.entity.order.Order;
 import com.webnorm.prototypever1.exception.exceptions.MemberException;
 import com.webnorm.prototypever1.security.redis.RedisTokenInfo;
 import com.webnorm.prototypever1.exception.exceptions.AuthException;
 import com.webnorm.prototypever1.exception.exceptions.BusinessLogicException;
 import com.webnorm.prototypever1.service.MemberService;
 import com.webnorm.prototypever1.security.TokenInfo;
+import com.webnorm.prototypever1.service.OrderService;
 import com.webnorm.prototypever1.service.RedisTokenInfoService;
 import com.webnorm.prototypever1.util.DataPattern;
 import com.webnorm.prototypever1.util.DataPatternMatcher;
@@ -22,8 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +43,7 @@ public class MemberController {
     private final MemberService memberService;
     private final EmailController emailController;
     private final RedisTokenInfoService redisTokenInfoService;
+    private final OrderService orderService;
 
     // 회원가입 : request(dto)를 member 엔티티에 매핑, 메일 발송
     @PostMapping
@@ -139,5 +145,14 @@ public class MemberController {
         // id 로 사용자 삭제
         Member deletedMember = memberService.deleteMember(memberId);
         return new SingleResponse(HttpStatus.OK, "successfully deleted member " + deletedMember.getId());
+    }
+
+    // 회원 주문 조회
+    @GetMapping("/orders")
+    public MultiResponse orderList(@AuthenticationPrincipal User user, Pageable pageable) {
+        // 정렬기준 설정
+        Sort sort = Sort.by("createDate").descending();
+        Page<Order> orderList = orderService.findByEmail(user.getUsername(), PageRequest.of(pageable.getPageNumber(), 2, sort));
+        return new MultiResponse(HttpStatus.OK, "successfully found orderlist", orderList);
     }
 }

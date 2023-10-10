@@ -5,6 +5,7 @@ import com.webnorm.prototypever1.dto.request.address.AddressUpdateRequest;
 import com.webnorm.prototypever1.dto.request.member.MemberUpdateRequest;
 import com.webnorm.prototypever1.entity.member.Address;
 import com.webnorm.prototypever1.entity.member.Member;
+import com.webnorm.prototypever1.entity.order.Order;
 import com.webnorm.prototypever1.exception.exceptions.AddressException;
 import com.webnorm.prototypever1.security.oauth.SocialType;
 import com.webnorm.prototypever1.security.redis.RedisTokenInfo;
@@ -63,8 +64,9 @@ public class MemberService {
     }
 
     // 회원 id로 조회
-    public Optional<Member> findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email);
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessLogicException(MemberException.USER_NOT_FOUND));
     }
 
     /*

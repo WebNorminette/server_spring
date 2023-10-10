@@ -7,7 +7,7 @@ import com.webnorm.prototypever1.dto.response.MultiResponse;
 import com.webnorm.prototypever1.dto.response.SingleResponse;
 import com.webnorm.prototypever1.dto.response.product.ProductByIdResponse;
 import com.webnorm.prototypever1.dto.response.product.ProductListResponse;
-import com.webnorm.prototypever1.dto.response.product.ProductOtherColorResponse;
+import com.webnorm.prototypever1.entity.product.SimpleProduct;
 import com.webnorm.prototypever1.entity.product.Collection;
 import com.webnorm.prototypever1.entity.product.Image;
 import com.webnorm.prototypever1.entity.product.Product;
@@ -87,7 +87,7 @@ public class ProductController {
     @GetMapping("/collections/{collectionName}/products/{productId}")
     public SingleResponse searchProductById(@PathVariable("productId") String productId) {
         Product product = productService.findById(productId);   // 상품 조회
-        List<ProductOtherColorResponse> otherColors = productService.findOtherColors(productId);  // 다른 색상 조회
+        List<SimpleProduct> otherColors = productService.findOtherColors(productId);  // 다른 색상 조회
         ProductByIdResponse productByIdResponse = product.toSingleResponse(otherColors);
         return new SingleResponse(HttpStatus.OK, "successfully found Product by Id ", productByIdResponse);
     }

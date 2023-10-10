@@ -6,6 +6,7 @@ import com.webnorm.prototypever1.entity.product.Size;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -19,4 +20,5 @@ public class ProductListResponse {
     private Image mainImg;
     private Image subImg;
     private int priority;
+    private LocalDateTime createDate;
 }

@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Image {
     private String productId;
     private String originName;

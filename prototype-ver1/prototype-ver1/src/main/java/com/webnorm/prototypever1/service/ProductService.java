@@ -1,7 +1,7 @@
 package com.webnorm.prototypever1.service;
 
 import com.webnorm.prototypever1.dto.request.product.ProductUpdateRequest;
-import com.webnorm.prototypever1.dto.response.product.ProductOtherColorResponse;
+import com.webnorm.prototypever1.entity.product.SimpleProduct;
 import com.webnorm.prototypever1.entity.product.Collection;
 import com.webnorm.prototypever1.entity.product.Image;
 import com.webnorm.prototypever1.entity.product.Product;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -49,19 +48,19 @@ public class ProductService {
     /*
      * [같은 상품의 다른 색상 조회]
      * */
-    public List<ProductOtherColorResponse> findOtherColors(String productId) {
+    public List<SimpleProduct> findOtherColors(String productId) {
         // id 로 조회
         Product productById = productRepository.findById(productId)
                 .orElseThrow(() -> new BusinessLogicException(ProductException.PRODUCT_NOT_FOUND));
         // 동일한 상품명 조회
         List<Product> productListByName = productRepository.findByName(productById.getName());
         // id 에 해당하는 상품을 제외한 나머지 상품 id 리스트 리턴
-        List<ProductOtherColorResponse> productList = new ArrayList<>();
+        List<SimpleProduct> productList = new ArrayList<>();
         for (Product product : productListByName) {
             if (!product.getId().equals(productId)) {
                 Image mainImg = null;
                 if (product.getImageList() != null) mainImg = product.getImageList().get(0);
-                productList.add(ProductOtherColorResponse.builder()
+                productList.add(SimpleProduct.builder()
                         .id(product.getId())
                         .color(product.getColor())
                         .mainImg(mainImg)
