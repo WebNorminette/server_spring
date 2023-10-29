@@ -17,6 +17,7 @@ public class EmailController {
     private final EmailService emailService;
 
     // 가입 환영 메일 전송
+    // 
     @RequestMapping("/welcome")
     public SingleResponse sendWelcomeEmail(String to, String name) {
         EmailMessage emailMessage = EmailMessage.builder()
